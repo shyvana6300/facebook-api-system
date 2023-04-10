@@ -1,0 +1,7 @@
+GRANT ALL PRIVILEGES ON * . * TO 'new_user'@'localhost';
+
+CREATE USER 'shyvana6300'@'localhost' IDENTIFIED BY 'Shyvana@6300';
+
+"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld" --install
+
+mysql -u root -p
