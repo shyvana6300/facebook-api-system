@@ -1,4 +1,4 @@
-GRANT ALL PRIVILEGES ON * . * TO 'new_user'@'localhost';
+GRANT ALL PRIVILEGES ON * . * TO 'shyvana6300'@'localhost';
 
 CREATE USER 'shyvana6300'@'localhost' IDENTIFIED BY 'Shyvana@6300';
 
