@@ -1,3 +1,7 @@
+const db = require("../model/baseModel");
+const Account = require("../model/accountModel");
+const Op = db.Sequelize.Op;
+
 const register = (req, res) => {
   console.log("---Called /register---");
   res.send(" ---Register ---");
@@ -10,17 +14,17 @@ const login = (req, res) => {
 
 const getToken = (req, res) => {
   console.log("---Called /getToken---");
-  res.send(' ---getToken ---');
+  res.send(" ---getToken ---");
 };
 
 const tmpFunction = (req, res) => {
-    console.log("---Called /HHHHH---");
-    res.send(" ---tmpFunction ---");
+  console.log("---Called /HHHHH---");
+  res.send(" ---tmpFunction ---");
 };
 
 module.exports = {
   register: register,
   login: login,
   getToken: getToken,
-  tmpFunction: tmpFunction
+  tmpFunction: tmpFunction,
 };
