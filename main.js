@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require("cors");
 const accountRoute = require('./routes/accountRoutes');
 const profileRoute = require('./routes/profileRoutes.js');
 
@@ -21,13 +22,16 @@ app.use('/account', accountRoute);
 app.use('/profile', profileRoute);
 
 const db = require("./model/baseModel");
-db.sequelize.sync()
+db.sequelize.authenticate()
   .then(() => {
     console.log("Database is Synced!");
   })
+  .catch((err) => {
+    console.log("Database sync failed: " + err.message);
+  });
 
 // Create Environment variable for port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`The API system is running on ${port}...`);
+    console.log(`The API system is running on ${PORT}...`);
 });
