@@ -1,32 +1,33 @@
-const baseModel = require("../model/baseModel");
+const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
-const Op = baseModel.Sequelize.Op;
+const accountValidator = require('../validator/accountValidator.js');
+// const Op = baseModel.Sequelize.Op;
 
 const register = (req, res) => {
   console.log("---Called /register---");
-  res.send(" ---Register ---");
   // TODO: validate request
+  var result = accountValidator.validateRegister(req);
+  
+  if (result.error) {
+    res.status(400).send(result.error);
+  }
 
   // Create new account object
   const newAccount = {
     email: req.body.email,
     password: req.body.password,
-    role: 'user'
-  }
-
+    role: "user",
+  };
   // Save new account to DB
   Account.create(newAccount)
-    .then(data => {
-        // return res.send(data);
-        console.log("register thanh cong");
+    .then((data) => {
+      return res.send(data);
     })
-    .catch(err => {
-        // return res.status(500).send({
-        //   message:
-        //     err.message || "Some error occurred while creating the Tutorial."
-        // });
-        console.log("==============loiii==========");
-        res.send(err);
+    .catch((err) => {
+      return res.status(500).send({
+        message:
+          err.message || "Create new account error."
+      });
     });
 };
 

@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const express = require('express');
 const app = express();
 const cors = require("cors");
@@ -22,7 +23,7 @@ app.use('/account', accountRoute);
 app.use('/profile', profileRoute);
 
 const db = require("./model/baseModel");
-db.sequelize.authenticate()
+db.sequelize.sync( {force: true})
   .then(() => {
     console.log("Database is connected!");
   })
