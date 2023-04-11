@@ -24,10 +24,10 @@ app.use('/profile', profileRoute);
 const db = require("./model/baseModel");
 db.sequelize.authenticate()
   .then(() => {
-    console.log("Database is Synced!");
+    console.log("Database is connected!");
   })
   .catch((err) => {
-    console.log("Database sync failed: " + err.message);
+    console.log("Database connection failed: " + err.message);
   });
 
 // Create Environment variable for port
