@@ -7,30 +7,24 @@ const bcrypt = require("bcryptjs");
 const verifyRegister = require('../middleware/verifyRegister');
 const register = async (req, res, next) => {
     console.log("---Called /register---");
-    verifyRegister.checkEmailExist(req, res, next);
-    console.log("---1, after check email---");
-    const result = await accountValidator.validateRegister(req);
-    console.log("---2, after validate req---");
+    // const result = await accountValidator.validateRegister(req);
     // send message to response if error
-    if (await result.error) {
-        console.log("---3, bbefore send validate message ---");
-        return res.status(400).send(resultValidate.error.details[0].message);
-    }
-    console.log("---4, bbefore create account ---");
+    // if (result.error) {
+    //     return res.status(400).send(resultValidate.error.details[0].message);
+    // }
     // Save new account to DB
-    await Account.create({
-        email: req.body.email,
-        password: req.body.password,
-        role: "user",
-    }).then((data) => {
-            return res.send(data);
+    try {
+        const account = await Account.create({
+            email: req.body.email,
+            password: req.body.password,
+            role: "user",
         })
-        .catch((err) => {
-            return res.status(500).send({
-                message:
-                    err.message || "Create new account error."
-            });
+        res.send(account);
+    } catch(error) {
+        res.status(500).send({
+            message: err.message || "Create new account error."
         });
+    }
 };
 
 const login = (req, res) => {

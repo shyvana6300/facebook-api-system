@@ -2,30 +2,24 @@ const express = require('express');
 const helmet = require('helmet'); 
 const app = express();
 const cors = require("cors");
-const accountRoute = require('./routes/accountRoutes');
-const profileRoute = require('./routes/profileRoutes.js');
 // const baseRoute = require('./routes/baseRoute.js');
 
 // Init cors option for middleware
 var corsOptions = {
     origin: "http://localhost:8081"
   };
-
-// Use cors for middleware
+// middleware
 app.use(cors(corsOptions));
-// Use helmet for security
 app.use(helmet());
 app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
 // Route for '/account' route
-app.use('/account', accountRoute);
-// Route for '/user' route
-app.use('/profile', profileRoute);
+// app.use('/account', accountRoute);
+require('./routes/accountRoutes')(app);
 
-// Route for base
-// app.use('/', baseRoute);
+// Route for '/user' route
+// app.use('/profile', profileRoute);
 
 const db = require("./model/baseModel");
 db.sequelize.sync( {force: true})
