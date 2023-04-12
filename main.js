@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors");
 const accountRoute = require('./routes/accountRoutes');
 const profileRoute = require('./routes/profileRoutes.js');
-const db = require("./model/baseModel");
+const db = require("./models/baseModel");
 // Init cors option for middleware
 var corsOptions = {
     origin: "http://localhost:8081"
