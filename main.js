@@ -4,8 +4,7 @@ const app = express();
 const cors = require("cors");
 const accountRoute = require('./routes/accountRoutes');
 const profileRoute = require('./routes/profileRoutes.js');
-// const baseRoute = require('./routes/baseRoute.js');
-
+const db = require("./model/baseModel");
 // Init cors option for middleware
 var corsOptions = {
     origin: "http://localhost:8081"
@@ -24,10 +23,6 @@ app.use('/account', accountRoute);
 // Route for '/user' route
 app.use('/profile', profileRoute);
 
-// Route for base
-// app.use('/', baseRoute);
-
-const db = require("./model/baseModel");
 db.sequelize.sync( {force: true})
   .then(() => {
     console.log("Database is connected and synced!");
