@@ -10,20 +10,35 @@ const register = async (req, res, next) => {
     try {
         const account = await Account.create({
             email: req.body.email,
-            password: req.body.password,
+            password: bcrypt.hashSync(req.body.password, 8),
             role: "user",
         })
         res.send(account);
-    } catch(error) {
+    } catch (error) {
         res.status(500).send({
             message: error.message || "Create new account error."
         });
     }
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
     console.log("---Called /login---");
-    res.send(" ---Login ---");
+    const account = await Account.findOne({
+        where: {
+            email: req.body.email,
+        },
+    });
+
+    if (!account) {
+        return res.status(404).send({ message: "User email not found!" });
+    }
+
+    const checkPassword = bcrypt.compareSync(
+        req.body.password,
+        account.password
+      );
+
+
 };
 
 const getToken = (req, res) => {
