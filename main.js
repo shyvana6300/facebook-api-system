@@ -14,13 +14,13 @@ var corsOptions = {
 // Use cors for middleware
 app.use(cors(corsOptions));
 // Use helmet for security
-app.use(helmet);
+app.use(helmet());
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
 // Route for '/account' route
 app.use('/account', accountRoute);
-
 // Route for '/user' route
 app.use('/profile', profileRoute);
 
@@ -28,7 +28,7 @@ app.use('/profile', profileRoute);
 // app.use('/', baseRoute);
 
 const db = require("./model/baseModel");
-db.sequelize.sync()
+db.sequelize.sync( {force: true})
   .then(() => {
     console.log("Database is connected and synced!");
   })
