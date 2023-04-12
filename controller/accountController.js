@@ -5,11 +5,13 @@ const accountValidator = require('../validator/accountValidator.js');
 
 const register = (req, res) => {
   console.log("---Called /register---");
-  // TODO: validate request
+  console.log("=====req = " + req);
+  console.log("=====req.body = " + req.body);
+  console.log("=====req.body.email = " + req.body.email);
   var result = accountValidator.validateRegister(req);
   
   if (result.error) {
-    res.status(400).send(result.error);
+    return res.status(400).send(result.error.details[0].message);
   }
 
   // Create new account object

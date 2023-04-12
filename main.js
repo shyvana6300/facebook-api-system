@@ -1,9 +1,10 @@
-const Joi = require('joi');
-const express = require('express');
+const express = require('express'); 
+const helmet = require('helmet'); 
 const app = express();
 const cors = require("cors");
 const accountRoute = require('./routes/accountRoutes');
 const profileRoute = require('./routes/profileRoutes.js');
+// const baseRoute = require('./routes/baseRoute.js');
 
 // Init cors option for middleware
 var corsOptions = {
@@ -12,7 +13,8 @@ var corsOptions = {
 
 // Use cors for middleware
 app.use(cors(corsOptions));
-
+// Use helmet for security
+app.use(helmet);
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
@@ -22,10 +24,13 @@ app.use('/account', accountRoute);
 // Route for '/user' route
 app.use('/profile', profileRoute);
 
+// Route for base
+// app.use('/', baseRoute);
+
 const db = require("./model/baseModel");
-db.sequelize.sync( {force: true})
+db.sequelize.sync()
   .then(() => {
-    console.log("Database is connected!");
+    console.log("Database is connected and synced!");
   })
   .catch((err) => {
     console.log("Database connection failed: " + err.message);
