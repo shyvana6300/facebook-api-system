@@ -17,5 +17,4 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.accountModel = require("./accountModel.js")(sequelize, Sequelize);
-console.log("===========db.accountModel = " +db.accountModel);
 module.exports = db;
