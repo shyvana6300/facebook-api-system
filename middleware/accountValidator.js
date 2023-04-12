@@ -8,7 +8,7 @@ const schema = require('../schema/schema');
  * @param {*} res 
  * @param {*} next 
  */
-validateRegister = async (req, res, next) => {
+const validateRegister = async (req, res, next) => {
     try {
         // Check email exist
         let result = await Account.findOne({
