@@ -14,7 +14,7 @@ const register = async (req, res, next) => {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
             role: "user",
-            otp: otpGenerator.generateOTP()
+            otp: ''
         })
         res.send('You has been sign up!');
     } catch (error) {
@@ -28,7 +28,7 @@ const login = async (req, res) => {
     console.log("---Called /login---");
     try {
         // check account email exists
-        const account = await Account.findOne({
+        let account = await Account.findOne({
             where: {
                 email: req.body.email,
             },
@@ -44,6 +44,18 @@ const login = async (req, res) => {
         if (!checkPassword) {
             return res.status(401).send('Invalid password!');
         }
+        // Create otp and update it to current Account
+        account = await Account.update({
+            otp: otpGenerator.generateOTP(),
+        },
+        {
+            where: { email: req.body.email },
+        });
+        account = await Account.findOne({
+            where: {
+                email: req.body.email,
+            },
+        });
         return res.status(200).send('Your OTP is: ' + account.otp);
     } catch (error) {
         res.status(500).send({
@@ -70,10 +82,16 @@ const tmpFunction = (req, res) => {
     res.send(" ---tmpFunction ---");
 };
 
+const testApi = (req, res) => {
+    console.log("---Called /testApi---");
+    res.status(200).send(" ---testApi Called ---");
+};
+
 module.exports = {
     register: register,
     login: login,
     testGetToken: testGetToken,
     getToken: getToken,
     tmpFunction: tmpFunction,
+    testApi: testApi
 };

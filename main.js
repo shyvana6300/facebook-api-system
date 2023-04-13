@@ -30,6 +30,10 @@ app.use(
 app.use('/account', accountRoute);
 // Route for '/user' route
 app.use('/profile', profileRoute);
+
+app.get("/", (req, res) => {
+    res.status(200).send("Hello World!");
+  });
 // db.sequelize.sync({force: true})
 db.sequelize.sync()
   .then(() => {
@@ -41,6 +45,8 @@ db.sequelize.sync()
 
 // Create Environment variable for port
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`The API system is running on ${PORT}...`);
 });
+
+module.exports = server;

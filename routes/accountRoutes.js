@@ -11,5 +11,6 @@ account_router.get('/testGetToken', authValidator.verifyToken, accountController
 
 account_router.post('/getToken', accountValidator.validateLoginOTP, accountController.getToken);
 
+account_router.get('/testApi', accountController.testApi);
 
 module.exports = account_router;
