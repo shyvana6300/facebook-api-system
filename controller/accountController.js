@@ -14,9 +14,9 @@ const register = async (req, res, next) => {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
             role: "user",
-            otp: ''
+            otp: otpGenerator.generateOTP()
         })
-        res.send('You has been sign up!');
+        res.status(201).send(account);
     } catch (error) {
         res.status(500).send({
             message: error.message || "Unexpected error occurred when creating new account."
