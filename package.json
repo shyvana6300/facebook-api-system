@@ -2,8 +2,13 @@
   "name": "facebook-api-system",
   "version": "1.0.0",
   "description": "facebook api system for user",
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
+  },
   "main": "main.js",
   "scripts": {
+    "jest": "jest --env=node --colors --coverage test",
     "test": "jest"
   },
   "author": "LongNH",
@@ -23,6 +28,7 @@
     "sequelize": "^6.31.0"
   },
   "devDependencies": {
-    "jest": "^22.2.2"
+    "jest": "^22.2.2",
+    "supertest": "^3.0.0"
   }
 }
