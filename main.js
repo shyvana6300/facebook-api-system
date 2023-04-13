@@ -30,7 +30,7 @@ app.use(
 app.use('/account', accountRoute);
 // Route for '/user' route
 app.use('/profile', profileRoute);
-
+// db.sequelize.sync({force: true})
 db.sequelize.sync()
   .then(() => {
     console.log("Database is connected and synced!");

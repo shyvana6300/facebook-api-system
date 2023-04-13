@@ -11,7 +11,10 @@ module.exports = (sequelize, Sequelize) => {
         role: {
             type: Sequelize.STRING,
             allowNull: false
-        }
+        },
+        otp: {
+            type: Sequelize.STRING,
+        },
     });
 
     return Account;

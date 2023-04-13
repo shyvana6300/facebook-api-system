@@ -1,9 +1,11 @@
 const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
-const config = require("../config/authconfig");
 const Op = baseModel.Sequelize.Op;
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const otpGenerator = require('../utils/otpGenerator');
+const jwt = require("jsonwebtoken");
+const config = require("../config/authconfig");
+
 const register = async (req, res, next) => {
     console.log("---Called /register---");
     // Save new account to DB
@@ -12,8 +14,9 @@ const register = async (req, res, next) => {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
             role: "user",
+            otp: otpGenerator.generateOTP()
         })
-        res.send(account);
+        res.send('You has been sign up!');
     } catch (error) {
         res.status(500).send({
             message: error.message || "Unexpected error occurred when creating new account."
@@ -41,25 +44,25 @@ const login = async (req, res) => {
         if (!checkPassword) {
             return res.status(401).send('Invalid password!');
         }
-        // Generate token
-        const token = jwt.sign({email: account.email}, config.secret_key, {expiresIn: 3600});
-        // Set token to session
-        req.session.token = token;
-        return res.status(200).send(token);
+        return res.status(200).send('Your OTP is: ' + account.otp);
     } catch (error) {
         res.status(500).send({
             message: error.message || "Unexpected error occurred when signing in."
         });
     }
-
-
-
-
 };
 
 const testGetToken = (req, res) => {
-    console.log("---Called /getToken---");
+    console.log("---Called /TestgetToken---");
     res.send(" ---getToken ---");
+};
+const getToken = (req, res) => {
+    console.log("---Called /getToken---");
+    // Generate token
+    const token = jwt.sign({ email: req.body.email }, config.secret_key, { expiresIn: 3600 });
+    // Set token to session
+    req.session.token = token;
+    return res.status(200).send(token);
 };
 
 const tmpFunction = (req, res) => {
@@ -71,5 +74,6 @@ module.exports = {
     register: register,
     login: login,
     testGetToken: testGetToken,
+    getToken: getToken,
     tmpFunction: tmpFunction,
 };

@@ -7,7 +7,9 @@ account_router.post('/register', accountValidator.validateRegister, accountContr
 
 account_router.post('/login', accountController.login);
 
-account_router.post('/testGetToken', authValidator.verifyToken, accountController.testGetToken);
+account_router.get('/testGetToken', authValidator.verifyToken, accountController.testGetToken);
+
+account_router.post('/getToken', accountValidator.validateLoginOTP, accountController.getToken);
 
 
 module.exports = account_router;

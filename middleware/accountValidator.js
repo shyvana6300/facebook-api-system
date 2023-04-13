@@ -35,8 +35,30 @@ const validateRegister = async (req, res, next) => {
             message: "Error when checking email exist: " + error.message
         })
     }
-}
+};
 
+const validateLoginOTP = async (req, res, next) => {
+    try {
+        // get account by email from request
+        let account = await Account.findOne({
+            where: {
+                email: req.body.email,
+            },
+        });
+        // validate request body param { email, otp}
+        if (!account) {
+            return res.status(404).send({ message: "Account not found!" });
+        } else if (!account.otp || account.otp !== req.body.otp) {
+            return res.status(400).send({ otp: account.otp, message: "OTP not match!" });
+        }
+        next();
+    } catch (error) {
+        return res.status(500).send({
+            message: "Some error occurred when login!" + error.message
+        })
+    }
+}
 module.exports = {
-    validateRegister: validateRegister
+    validateRegister: validateRegister,
+    validateLoginOTP: validateLoginOTP
 }
