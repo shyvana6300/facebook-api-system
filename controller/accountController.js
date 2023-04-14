@@ -76,7 +76,7 @@ const forgotPassword = (req, res) => {
     console.log("---originalUrl: " +  req.originalUrl); //-> localhost:3000
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     console.log("---fullUrl: " +  fullUrl); //-> localhost:3000
-    res.send(" ---tmpFunction ---");
+    res.send(" ---forgotPassword ---");
 };
 
 const testGetToken = (req, res) => {

@@ -58,7 +58,7 @@ const validateGetToken = async (req, res, next) => {
         });
         // validate request body param { email, otp}
         if (!account) {
-            return res.status(404).send({ message: "Account not found!" });
+            return res.status(404).send({ message: "Account not exist!" });
         } else if (!req.session.otp) {
             return res.status(400).send({ message: "OTP not exist!" });
         } else if (req.session.otp.value !== req.body.otp) {
@@ -75,9 +75,15 @@ const validateGetToken = async (req, res, next) => {
 }
 
 const validateForgotPassword = async (req, res, next) => {
-    
+    const schemaEmailForgot = schema.schemaEmailForgot;
+    const result = schemaEmailForgot.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    }
+    next();
 }
 function checkExpiredOTP (otp) {
+    if(!otp) return false
     const currentTime = new Date().getTime();
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 /60;
     console.log("---khoang cach phut  = " + differentMinutes);
@@ -85,5 +91,6 @@ function checkExpiredOTP (otp) {
 }
 module.exports = {
     validateRegister: validateRegister,
-    validateGetToken: validateGetToken
+    validateGetToken: validateGetToken,
+    validateForgotPassword: validateForgotPassword
 }

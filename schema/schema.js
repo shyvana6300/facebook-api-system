@@ -8,6 +8,12 @@ const schemaAccount = Joi.object({
     password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{8,30}$')).required()
 })
 
+const schemaEmailForgot = Joi.object({
+    email: Joi.string()
+        .email({ minDomainSegments: 2 })
+        .required(),
+})
 module.exports = {
-    schemaAccount: schemaAccount
+    schemaAccount: schemaAccount,
+    schemaEmailForgot: schemaEmailForgot
 };
