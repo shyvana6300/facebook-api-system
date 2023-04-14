@@ -7,6 +7,7 @@ const config = require("../config/authconfig");
 
 const register = async (req, res, next) => {
     console.log("---Called /register---");
+    
     // Save new account to DB
     try {
         const account = await Account.create({
@@ -58,10 +59,6 @@ const login = async (req, res) => {
     }
 };
 
-const testGetToken = (req, res) => {
-    console.log("---Called /TestgetToken---");
-    res.send(" ---getToken ---");
-};
 const getToken = (req, res) => {
     console.log("---Called /getToken---");
     // Generate token
@@ -71,6 +68,21 @@ const getToken = (req, res) => {
     return res.status(200).send(token);
 };
 
+const forgotPassword = (req, res) => {
+    console.log("---Called /forgotPassword---");
+    console.log("---base URL: " +  req.baseUrl); // -> /account
+    console.log("---host: " +  req.get('host')); //-> localhost:3000
+    console.log("---host: " +  req.get('host')); //-> localhost:3000
+    console.log("---originalUrl: " +  req.originalUrl); //-> localhost:3000
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    console.log("---fullUrl: " +  fullUrl); //-> localhost:3000
+    res.send(" ---tmpFunction ---");
+};
+
+const testGetToken = (req, res) => {
+    console.log("---Called /TestgetToken---");
+    res.send(" ---getToken ---");
+};
 const tmpFunction = (req, res) => {
     console.log("---Called /HHHHH---");
     res.send(" ---tmpFunction ---");
@@ -86,6 +98,7 @@ module.exports = {
     login: login,
     testGetToken: testGetToken,
     getToken: getToken,
+    forgotPassword: forgotPassword,
     tmpFunction: tmpFunction,
     testApi: testApi
 };

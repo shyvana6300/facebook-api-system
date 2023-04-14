@@ -10,6 +10,7 @@ account_router.post('/login', accountController.login);
 account_router.get('/testGetToken', authValidator.verifyToken, accountController.testGetToken);
 
 account_router.post('/getToken', accountValidator.validateGetToken, accountController.getToken);
+account_router.post('/forgotPassword', accountController.forgotPassword);
 
 account_router.get('/testApi', accountController.testApi);
 
