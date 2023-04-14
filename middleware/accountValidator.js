@@ -64,7 +64,7 @@ const validateGetToken = async (req, res, next) => {
         } else if (req.session.otp.value !== req.body.otp) {
             return res.status(400).send({ message: "OTP not match!" });
         } else if (!isExpired) {
-            return res.status(400).send({ message: "OTP expired!" });
+            return res.status(400).send({ message: "OTP expired! Please login again!" });
         }
         next();
     } catch (error) {
