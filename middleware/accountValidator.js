@@ -37,8 +37,19 @@ const validateRegister = async (req, res, next) => {
     }
 };
 
+//TODO: validate login params. Xem xet tach doan schema ra ham rieng roi goi vao tu register va login.
+const validateLogin = async (req, res, next) => {
+
+}
+
 const validateGetToken = async (req, res, next) => {
     try {
+        console.log('====validate getToken = ');
+        const otp = req.session.otp;
+        console.log('-----OTP get from session: ' + JSON.stringify(otp));
+        console.log('-----OTP get from request: ' + req.body.otp);
+        const isExpired = checkExpiredOTP(otp);
+        console.log('====checkExpiredOTP = '+isExpired);
         // get account by email from request
         let account = await Account.findOne({
             where: {
@@ -48,15 +59,25 @@ const validateGetToken = async (req, res, next) => {
         // validate request body param { email, otp}
         if (!account) {
             return res.status(404).send({ message: "Account not found!" });
-        } else if (!req.session.otp || req.session.otp !== req.body.otp) {
-            return res.status(400).send({ message: "OTP expired or not match!" });
+        } else if (!req.session.otp) {
+            return res.status(400).send({ message: "OTP not exist!" });
+        } else if (req.session.otp.value !== req.body.otp) {
+            return res.status(400).send({ message: "OTP not match!" });
+        } else if (!isExpired) {
+            return res.status(400).send({ message: "OTP expired!" });
         }
         next();
     } catch (error) {
         return res.status(500).send({
-            message: "Some error occurred when login!" + error.message
+            message: "Some error occurred when login: " + error.message
         })
     }
+}
+function checkExpiredOTP (otp) {
+    const currentTime = new Date().getTime();
+    const differentMinutes = (currentTime - otp.timeCreated) / 1000 /60;
+    console.log("---khoang cach phut  = " + differentMinutes);
+    return differentMinutes > 5 ? false : true;
 }
 module.exports = {
     validateRegister: validateRegister,

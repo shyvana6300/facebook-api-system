@@ -14,7 +14,6 @@ const register = async (req, res, next) => {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
             role: "user",
-            otp: otpGenerator.generateOTP()
         })
         res.status(201).send(account);
     } catch (error) {
@@ -45,12 +44,14 @@ const login = async (req, res) => {
             return res.status(401).send('Invalid password!');
         }
         // Create otp to verify
-        const otp = otpGenerator.generateOTP();
+        const otp = {
+            value: otpGenerator.generateOTP(),
+            timeCreated: new Date().getTime()
+        }
+        console.log(JSON.stringify(otp));
         req.session.otp = otp;
-        setTimeout(() => {
-            delete req.session.otp
-        },10000);
-        return res.status(200).send('Your OTP is: ' + otp);
+        console.log('-----OTP set to session: ' + JSON.stringify(otp));
+        return res.status(200).send('Your OTP is: ' + otp.value);
     } catch (error) {
         res.status(500).send({
             message: error.message || "Unexpected error occurred when signing in."
