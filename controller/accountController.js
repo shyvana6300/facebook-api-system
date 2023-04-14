@@ -1,6 +1,5 @@
 const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
-const Op = baseModel.Sequelize.Op;
 const bcrypt = require("bcryptjs");
 const otpGenerator = require('../utils/otpGenerator');
 const jwt = require("jsonwebtoken");
