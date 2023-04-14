@@ -73,6 +73,10 @@ const validateGetToken = async (req, res, next) => {
         })
     }
 }
+
+const validateForgotPassword = async (req, res, next) => {
+    
+}
 function checkExpiredOTP (otp) {
     const currentTime = new Date().getTime();
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 /60;
