@@ -1,14 +1,13 @@
 const request = require('supertest');
-let server;
+const app = require('../app');
 
-describe('/api/facebook', () => {
-    beforeEach(() => {server = require('../main');})
-    afterEach(() => {server.close();});
-
-    describe('GET /', () => {
-        it('should return the test result api', async () => {
-            const res = await request(server).get('/');
-            expect(res.status).toBe(200);
+describe("Test the root path", () => {
+    test("It should response the GET method", done => {
+      request(app)
+        .get("/")
+        .then(response => {
+          expect(response.statusCode).toBe(200);
+          done();
         });
     });
- });
+  });
