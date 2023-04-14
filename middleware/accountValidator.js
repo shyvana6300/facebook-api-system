@@ -37,7 +37,7 @@ const validateRegister = async (req, res, next) => {
     }
 };
 
-const validateLoginOTP = async (req, res, next) => {
+const validateGetToken = async (req, res, next) => {
     try {
         // get account by email from request
         let account = await Account.findOne({
@@ -48,8 +48,8 @@ const validateLoginOTP = async (req, res, next) => {
         // validate request body param { email, otp}
         if (!account) {
             return res.status(404).send({ message: "Account not found!" });
-        } else if (!account.otp || account.otp !== req.body.otp) {
-            return res.status(400).send({ otp: account.otp, message: "OTP not match!" });
+        } else if (!req.session.otp || req.session.otp !== req.body.otp) {
+            return res.status(400).send({ message: "OTP expired or not match!" });
         }
         next();
     } catch (error) {
@@ -60,5 +60,5 @@ const validateLoginOTP = async (req, res, next) => {
 }
 module.exports = {
     validateRegister: validateRegister,
-    validateLoginOTP: validateLoginOTP
+    validateGetToken: validateGetToken
 }

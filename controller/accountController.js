@@ -14,9 +14,9 @@ const register = async (req, res, next) => {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
             role: "user",
-            otp: ''
+            otp: otpGenerator.generateOTP()
         })
-        res.send('You has been sign up!');
+        res.status(201).send(account);
     } catch (error) {
         res.status(500).send({
             message: error.message || "Unexpected error occurred when creating new account."
@@ -44,19 +44,13 @@ const login = async (req, res) => {
         if (!checkPassword) {
             return res.status(401).send('Invalid password!');
         }
-        // Create otp and update it to current Account
-        account = await Account.update({
-            otp: otpGenerator.generateOTP(),
-        },
-        {
-            where: { email: req.body.email },
-        });
-        account = await Account.findOne({
-            where: {
-                email: req.body.email,
-            },
-        });
-        return res.status(200).send('Your OTP is: ' + account.otp);
+        // Create otp to verify
+        const otp = otpGenerator.generateOTP();
+        req.session.otp = otp;
+        setTimeout(() => {
+            delete req.session.otp
+        },10000);
+        return res.status(200).send('Your OTP is: ' + otp);
     } catch (error) {
         res.status(500).send({
             message: error.message || "Unexpected error occurred when signing in."

@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        otp: {
+        otpKey: {
             type: Sequelize.STRING,
         },
     });
