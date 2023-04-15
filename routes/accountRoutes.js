@@ -7,10 +7,11 @@ account_router.post('/register', accountValidator.validateRegister, accountContr
 
 account_router.post('/login', accountController.login);
 
-account_router.get('/testGetToken', authValidator.verifyToken, accountController.testGetToken);
+account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountController.testGetToken);
 
 account_router.post('/getTokenLogin', accountValidator.validateGetTokenLogin, accountController.getTokenLogin);
 account_router.post('/forgotPassword', accountValidator.validateForgotPassword, accountController.forgotPassword);
+account_router.post('/resetPassword', accountValidator.validateResetPassword, accountController.resetPassword);
 
 account_router.get('/testApi', accountController.testApi);
 

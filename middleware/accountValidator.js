@@ -82,6 +82,11 @@ const validateForgotPassword = async (req, res, next) => {
     }
     next();
 }
+
+const validateResetPassword = async (req, res, next) => {
+    
+    next();
+}
 function checkExpiredOTP (otp) {
     if(!otp) return false
     const currentTime = new Date().getTime();
@@ -92,5 +97,6 @@ function checkExpiredOTP (otp) {
 module.exports = {
     validateRegister: validateRegister,
     validateGetTokenLogin: validateGetTokenLogin,
-    validateForgotPassword: validateForgotPassword
+    validateForgotPassword: validateForgotPassword,
+    validateResetPassword: validateResetPassword
 }

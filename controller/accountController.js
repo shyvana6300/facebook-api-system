@@ -61,10 +61,10 @@ const login = async (req, res) => {
 
 const getTokenLogin = (req, res) => {
     console.log("---Called /getToken---");
-    // Generate token
-    const token = jwt.sign({ email: req.body.email }, config.secret_key, { expiresIn: 3600 });
+    // Generate token - expired in 60 seconds
+    const token = jwt.sign({ email: req.body.email }, config.secret_key, { expiresIn: 60 });
     // Set token to session
-    req.session.token = token;
+    req.session.tokenLogin = token;
     return res.status(200).send(token);
 };
 
@@ -77,18 +77,24 @@ const forgotPassword = (req, res) => {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     console.log("---fullUrl: " +  fullUrl); //-> http://localhost:3000/account/forgotPassword
     
-    // Create Token
-
+    // Create Token - expired in 60 seconds
+    const tokenForgotPass = jwt.sign({ email: req.body.email }, config.secret_key, { expiresIn: 60 });
     // Create link with token provided
-    
+    const resetPassURL = `${req.protocol}://${req.get('host')}/account/resetPassword?token=${tokenForgotPass}`;
     // Return link to response
-    res.send(" ---forgotPassword ---");
+    res.status(200).send(resetPassURL);
 };
 
 const testGetToken = (req, res) => {
     console.log("---Called /TestgetToken---");
     res.send(" ---getToken ---");
 };
+
+const resetPassword = (req, res) => {
+    console.log("---Called /resetPassword---");
+    res.send(" ---resetPassword ---");
+};
+
 const tmpFunction = (req, res) => {
     console.log("---Called /HHHHH---");
     res.send(" ---tmpFunction ---");
@@ -105,6 +111,7 @@ module.exports = {
     testGetToken: testGetToken,
     getTokenLogin: getTokenLogin,
     forgotPassword: forgotPassword,
+    resetPassword: resetPassword,
     tmpFunction: tmpFunction,
     testApi: testApi
 };

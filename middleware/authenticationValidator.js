@@ -3,9 +3,9 @@ const config = require("../config/authconfig");
 const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
 
-const verifyToken = (req, res, next) => {
-    let token = req.session.token;
-    // check if token given from request
+const verifyTokenLogin = (req, res, next) => {
+    let token = req.session.tokenLogin;
+    // check if token exist
     if(!token) {
         return res.status(403).send('No token provided!')
     }
@@ -21,5 +21,5 @@ const verifyToken = (req, res, next) => {
 }
 
 module.exports = {
-    verifyToken: verifyToken
+    verifyTokenLogin: verifyTokenLogin
 }
