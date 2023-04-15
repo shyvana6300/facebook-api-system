@@ -42,7 +42,7 @@ const validateLogin = async (req, res, next) => {
 
 }
 
-const validateGetToken = async (req, res, next) => {
+const validateGetTokenLogin = async (req, res, next) => {
     try {
         console.log('====validate getToken = ');
         const otp = req.session.otp;
@@ -91,6 +91,6 @@ function checkExpiredOTP (otp) {
 }
 module.exports = {
     validateRegister: validateRegister,
-    validateGetToken: validateGetToken,
+    validateGetTokenLogin: validateGetTokenLogin,
     validateForgotPassword: validateForgotPassword
 }

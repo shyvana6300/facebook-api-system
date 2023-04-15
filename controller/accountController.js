@@ -59,7 +59,7 @@ const login = async (req, res) => {
     }
 };
 
-const getToken = (req, res) => {
+const getTokenLogin = (req, res) => {
     console.log("---Called /getToken---");
     // Generate token
     const token = jwt.sign({ email: req.body.email }, config.secret_key, { expiresIn: 3600 });
@@ -70,12 +70,18 @@ const getToken = (req, res) => {
 
 const forgotPassword = (req, res) => {
     console.log("---Called /forgotPassword---");
-    console.log("---base URL: " +  req.baseUrl); // -> /account
-    console.log("---host: " +  req.get('host')); //-> localhost:3000
-    console.log("---host: " +  req.get('host')); //-> localhost:3000
-    console.log("---originalUrl: " +  req.originalUrl); //-> localhost:3000
+
+    console.log("---protocol: " +  req.protocol); //-> http
+    console.log("---host: " +  req.get('host')); //-> localhost:3000    
+    console.log("---originalUrl: " +  req.originalUrl); //-> /account/forgotPassword
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log("---fullUrl: " +  fullUrl); //-> localhost:3000
+    console.log("---fullUrl: " +  fullUrl); //-> http://localhost:3000/account/forgotPassword
+    
+    // Create Token
+
+    // Create link with token provided
+    
+    // Return link to response
     res.send(" ---forgotPassword ---");
 };
 
@@ -97,7 +103,7 @@ module.exports = {
     register: register,
     login: login,
     testGetToken: testGetToken,
-    getToken: getToken,
+    getTokenLogin: getTokenLogin,
     forgotPassword: forgotPassword,
     tmpFunction: tmpFunction,
     testApi: testApi
