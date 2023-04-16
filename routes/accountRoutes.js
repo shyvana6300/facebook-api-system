@@ -11,7 +11,7 @@ account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountContr
 
 account_router.post('/getTokenLogin', accountValidator.validateGetTokenLogin, accountController.getTokenLogin);
 account_router.post('/forgotPassword', accountValidator.validateForgotPassword, accountController.forgotPassword);
-account_router.post('/resetPassword', accountValidator.validateResetPassword, accountController.resetPassword);
+account_router.post('/resetPassword/:token', [authValidator.verifyTokenResetPwd ,accountValidator.validateResetPassword], accountController.resetPassword);
 
 account_router.get('/testApi', accountController.testApi);
 

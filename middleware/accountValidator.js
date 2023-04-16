@@ -84,9 +84,16 @@ const validateForgotPassword = async (req, res, next) => {
 }
 
 const validateResetPassword = async (req, res, next) => {
-    
+    const schemaNewPassword = schema.schemaNewPassword;
+    const result = schemaNewPassword.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    } else if (req.body.passwordConfirm !== req.body.newPassword) {
+        return res.status(400).send('Password confirm not match!');
+    }
     next();
 }
+
 function checkExpiredOTP (otp) {
     if(!otp) return false
     const currentTime = new Date().getTime();

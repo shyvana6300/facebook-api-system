@@ -13,7 +13,13 @@ const schemaEmailForgot = Joi.object({
         .email({ minDomainSegments: 2 })
         .required(),
 })
+
+const schemaNewPassword = Joi.object({
+    newPassword: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{8,30}$')).required(),
+    passwordConfirm: Joi.string().required(),
+})
 module.exports = {
     schemaAccount: schemaAccount,
-    schemaEmailForgot: schemaEmailForgot
+    schemaEmailForgot: schemaEmailForgot,
+    schemaNewPassword: schemaNewPassword
 };

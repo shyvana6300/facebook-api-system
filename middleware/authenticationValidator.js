@@ -20,6 +20,21 @@ const verifyTokenLogin = (req, res, next) => {
     })
 }
 
+const verifyTokenResetPwd = (req, res, next) => {
+    let token = req.params.token;
+    // verify token
+    jwt.verify(token, config.secret_key, (error, decoded) => {
+        if (error) {
+            return res.status(401).send('Token Reset Unauthorized!');
+        }
+        console.log('===Token Reset verified!! Pass!!');
+        req.email = decoded.email;
+        console.log('===Request.email = '+req.email);
+        next();
+    })
+}
+
 module.exports = {
-    verifyTokenLogin: verifyTokenLogin
+    verifyTokenLogin: verifyTokenLogin,
+    verifyTokenResetPwd: verifyTokenResetPwd
 }
