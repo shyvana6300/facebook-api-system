@@ -1,6 +1,7 @@
 const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
 const schema = require('../schema/schema');
+const bcrypt = require("bcryptjs");
 
 /**
  * check if email from request exist in DB 
@@ -118,7 +119,7 @@ function checkExpiredOTP(otp) {
     const currentTime = new Date().getTime();
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
     console.log("---khoang cach phut  = " + differentMinutes);
-    return differentMinutes > 5 ? false : true;
+    return differentMinutes > 1 ? false : true;
 }
 module.exports = {
     validateRegister: validateRegister,
