@@ -26,23 +26,7 @@ const register = async (req, res, next) => {
 const login = async (req, res) => {
     console.log("---Called /login---");
     try {
-        // check account email exists
-        let account = await Account.findOne({
-            where: {
-                email: req.body.email,
-            },
-        });
-        if (!account) {
-            return res.status(404).send({ message: "Account not found!" });
-        }
-        // check password valid
-        const checkPassword = bcrypt.compareSync(
-            req.body.password,
-            account.password
-        );
-        if (!checkPassword) {
-            return res.status(401).send('Invalid password!');
-        }
+        
         // Create otp to verify
         const otp = {
             value: otpGenerator.generateOTP(),

@@ -3,9 +3,9 @@ const account_router = express.Router();
 const accountController = require('../controller/accountController');
 const accountValidator = require('../middleware/accountValidator');
 const authValidator = require('../middleware/authenticationValidator')
-account_router.post('/register', accountValidator.validateRegister, accountController.register);
+account_router.post('/register', [accountValidator.validateAccount ,accountValidator.validateRegister], accountController.register);
 
-account_router.post('/login', accountController.login);
+account_router.post('/login', [accountValidator.validateAccount, accountValidator.validateLogin], accountController.login);
 
 account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountController.testGetToken);
 

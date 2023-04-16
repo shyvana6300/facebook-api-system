@@ -11,7 +11,7 @@ const schema = require('../schema/schema');
 const validateRegister = async (req, res, next) => {
     try {
         // Check email exist
-        let result = await Account.findOne({
+        const result = await Account.findOne({
             where: {
                 email: req.body.email,
             }
@@ -20,15 +20,9 @@ const validateRegister = async (req, res, next) => {
             return res.status(400).send({
                 message: "Email has already been used by another account!"
             })
-        } else {
-            // Get schema for validating
-            const schemaAccount = schema.schemaAccount;
-            // Validate req body
-            const result = schemaAccount.validate(req.body);
-            if (result.error) {
-                return res.status(400).send(result.error.details[0].message);
-            }
+
         }
+
         next();
     } catch (error) {
         return res.status(500).send({
@@ -37,11 +31,36 @@ const validateRegister = async (req, res, next) => {
     }
 };
 
-//TODO: validate login params. Xem xet tach doan schema ra ham rieng roi goi vao tu register va login.
 const validateLogin = async (req, res, next) => {
-
+    // check account email exists
+    let account = await Account.findOne({
+        where: {
+            email: req.body.email,
+        },
+    });
+    if (!account) {
+        return res.status(404).send({ message: "Account not found!" });
+    }
+    // check password valid
+    const checkPassword = bcrypt.compareSync(
+        req.body.password,
+        account.password
+    );
+    if (!checkPassword) {
+        return res.status(401).send('Invalid password!');
+    }
+    next();
 }
-
+const validateAccount = (req, res, next) => {
+    // Get schema for validating
+    const schemaAccount = schema.schemaAccount;
+    // Validate req body
+    let result = schemaAccount.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    }
+    next();
+}
 const validateGetTokenLogin = async (req, res, next) => {
     try {
         console.log('====validate getToken = ');
@@ -49,7 +68,7 @@ const validateGetTokenLogin = async (req, res, next) => {
         console.log('-----OTP get from session: ' + JSON.stringify(otp));
         console.log('-----OTP get from request: ' + req.body.otp);
         const isExpired = checkExpiredOTP(otp);
-        console.log('====checkExpiredOTP = '+isExpired);
+        console.log('====checkExpiredOTP = ' + isExpired);
         // get account by email from request
         let account = await Account.findOne({
             where: {
@@ -94,10 +113,10 @@ const validateResetPassword = async (req, res, next) => {
     next();
 }
 
-function checkExpiredOTP (otp) {
-    if(!otp) return false
+function checkExpiredOTP(otp) {
+    if (!otp) return false
     const currentTime = new Date().getTime();
-    const differentMinutes = (currentTime - otp.timeCreated) / 1000 /60;
+    const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
     console.log("---khoang cach phut  = " + differentMinutes);
     return differentMinutes > 5 ? false : true;
 }
@@ -105,5 +124,7 @@ module.exports = {
     validateRegister: validateRegister,
     validateGetTokenLogin: validateGetTokenLogin,
     validateForgotPassword: validateForgotPassword,
-    validateResetPassword: validateResetPassword
+    validateResetPassword: validateResetPassword,
+    validateLogin: validateLogin,
+    validateAccount: validateAccount
 }
