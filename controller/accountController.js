@@ -18,14 +18,14 @@ const register = async (req, res, next) => {
 
 const loginOTP = async (req, res) => {
     console.log("---Called /login---");
-    const otp = accountServices.generateOTP
+    const otp = await accountServices.generateOTP();
     req.session.otp = otp;
-    console.log('-----OTP set to session: ' + JSON.stringify(otp));
+    console.log('-----OTP set to session: ' + JSON.stringify(otp.value));
     return res.status(200).send('Your OTP is: ' + otp.value);
 };
 
-const loginToken = (req, res) => {
-    console.log("---Called /getToken---");
+const getTokenLogin = (req, res) => {
+    console.log("---Called /loginToken---");
     // Generate token - expired in 60 seconds
     const token = accountServices.generateToken(req.body.email);
     // Set token to session
@@ -33,10 +33,9 @@ const loginToken = (req, res) => {
     return res.status(200).send(token);
 };
 
-const forgotPassword = (req, res) => {
-    console.log("---Called /forgotPassword---");
+const forgotPassword = async (req, res) => {
     // Create link with token provided
-    const resetPassURL = accountServices.generateURLForgetPassword(req.body.email);
+    const resetPassURL = await accountServices.generateURLForgetPassword(req.body.email, req.protocol, req.get('host'));
     // Return link to response
     res.status(200).send(resetPassURL);
 };
@@ -78,7 +77,7 @@ module.exports = {
     register: register,
     loginOTP: loginOTP,
     testGetToken: testGetToken,
-    loginToken: loginToken,
+    getTokenLogin: getTokenLogin,
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
     tmpFunction: tmpFunction,

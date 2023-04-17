@@ -28,14 +28,14 @@ const register = async (email, password) => {
  * Generate OTP for login
  * @returns OTP
  */
-const generateOTP = () => {
+const generateOTP = async () => {
     console.log("---Called Service /loginOTP---");
     // Create otp to verify
-    const otp = {
+    const otp = await {
         value: otpGenerator.generateOTP(),
         timeCreated: new Date().getTime()
     }
-    console.log(JSON.stringify(otp));
+    console.log('====OTP generated: ' +JSON.stringify(otp));
     return otp;
 };
 
@@ -73,11 +73,11 @@ const generateToken = (email) => {
  * @param {*} email 
  * @returns URL
  */
-const generateURLForgetPassword = (email) => {
+const generateURLForgetPassword = async (email, protocol, host, ) => {
     // Create Token - expired in 60 seconds
-    const tokenForgotPass = generateToken(email);
+    const tokenForgotPass = await generateToken(email);
     // Create URL forget password
-    const resetPassURL = `${req.protocol}://${req.get('host')}/account/resetPassword/${tokenForgotPass}`;
+    const resetPassURL = `${protocol}://${host}/account/resetPassword/${tokenForgotPass}`;
     return resetPassURL;
 }
 

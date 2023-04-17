@@ -62,8 +62,9 @@ const validateAccount = (req, res, next) => {
     }
     next();
 }
-const validateGetTokenLogin = async (req, res, next) => {
+const validateLoginToken = async (req, res, next) => {
     try {
+        // TODO: tach logic sang service + tao validate param cho OTP
         console.log('====validate getToken = ');
         const otp = req.session.otp;
         console.log('-----OTP get from session: ' + JSON.stringify(otp));
@@ -94,7 +95,7 @@ const validateGetTokenLogin = async (req, res, next) => {
     }
 }
 
-const validateForgotPassword = async (req, res, next) => {
+const validateEmailForgot = async (req, res, next) => {
     const schemaEmailForgot = schema.schemaEmailForgot;
     const result = schemaEmailForgot.validate(req.body);
     if (result.error) {
@@ -103,7 +104,7 @@ const validateForgotPassword = async (req, res, next) => {
     next();
 }
 
-const validateResetPassword = async (req, res, next) => {
+const validateNewPassword = async (req, res, next) => {
     const schemaNewPassword = schema.schemaNewPassword;
     const result = schemaNewPassword.validate(req.body);
     if (result.error) {
@@ -114,18 +115,30 @@ const validateResetPassword = async (req, res, next) => {
     next();
 }
 
+const validateLoginTokenSchema = async (req, res, next) => {
+    const schemaLoginToken = schema.schemaLoginToken;
+    const result = schemaLoginToken.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    }
+    next();
+}
 function checkExpiredOTP(otp) {
+    console.log('===checkexpired OTP: '+otp);
     if (!otp) return false
     const currentTime = new Date().getTime();
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
     console.log("---khoang cach phut  = " + differentMinutes);
     return differentMinutes > 1 ? false : true;
 }
+
+
 module.exports = {
     validateRegister: validateRegister,
-    validateGetTokenLogin: validateGetTokenLogin,
-    validateForgotPassword: validateForgotPassword,
-    validateResetPassword: validateResetPassword,
+    validateLoginToken: validateLoginToken,
+    validateEmailForgot: validateEmailForgot,
+    validateNewPassword: validateNewPassword,
     validateLogin: validateLogin,
-    validateAccount: validateAccount
+    validateAccount: validateAccount,
+    validateLoginTokenSchema: validateLoginTokenSchema
 }

@@ -10,7 +10,15 @@ const schemaAccount = Joi.object({
 
 const schemaEmailForgot = Joi.object({
     email: Joi.string()
-        .email({ minDomainSegments: 2 })
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'vn', 'jp'] } })
+        .required(),
+})
+
+const schemaLoginToken = Joi.object({
+    email: Joi.string()
+    .email({ minDomainSegments: 2 })
+    .required(),
+    otp: Joi.string()
         .required(),
 })
 
@@ -21,5 +29,6 @@ const schemaNewPassword = Joi.object({
 module.exports = {
     schemaAccount: schemaAccount,
     schemaEmailForgot: schemaEmailForgot,
-    schemaNewPassword: schemaNewPassword
+    schemaNewPassword: schemaNewPassword,
+    schemaLoginToken: schemaLoginToken
 };

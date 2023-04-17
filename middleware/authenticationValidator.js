@@ -12,7 +12,7 @@ const verifyTokenLogin = (req, res, next) => {
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
         if (error) {
-            return res.status(401).send('Token Unauthorized!');
+            return res.status(401).send('Token Unauthorized or Expired!');
         }
         console.log('===Token verified!! Pass!!');
         req.email = decoded.email;
