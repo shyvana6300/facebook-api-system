@@ -19,6 +19,7 @@ describe("Test the accountValidator", () => {
             const mockedNext = jest.fn();
             const mockedReq = mockValidateAccount.caseNG.mockReq.missingEmail;
             const mockedRes = {};
+            // TODO: xử lý mock function cho return res.status().send()
             mockedRes.status = () => {
                 send: jest.fn();
             }
