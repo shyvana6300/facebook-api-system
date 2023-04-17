@@ -63,6 +63,10 @@ const testGetToken = (req, res) => {
     res.send(" ---getToken ---");
 };
 
+const updateProfile = (req, res) => {
+    console.log("---Called /updateProfile---");
+    res.send(" ---updateProfile ---");
+};
 const tmpFunction = (req, res) => {
     console.log("---Called /HHHHH---");
     res.send(" ---tmpFunction ---");
@@ -80,6 +84,7 @@ module.exports = {
     getTokenLogin: getTokenLogin,
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
+    updateProfile: updateProfile,
     tmpFunction: tmpFunction,
     testApi: testApi
 };

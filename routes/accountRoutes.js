@@ -1,4 +1,6 @@
 const express = require('express');
+const multer  = require('multer');
+const upload = multer({ dest: './static/img/' })
 const account_router = express.Router();
 const accountController = require('../controller/accountController');
 const accountValidator = require('../middleware/accountValidator');
@@ -13,7 +15,7 @@ account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountContr
 
 account_router.post('/forgotPassword', accountValidator.validateEmailForgot, accountController.forgotPassword);
 account_router.post('/resetPassword/:token', [authValidator.verifyTokenResetPwd ,accountValidator.validateNewPassword], accountController.resetPassword);
-
+account_router.put('/updateProfile', upload.single('avatar'), accountController.updateProfile);
 account_router.get('/testApi', accountController.testApi);
 
 module.exports = account_router;
