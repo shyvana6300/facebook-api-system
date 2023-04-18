@@ -15,18 +15,16 @@ describe("Test the accountValidator", () => {
             });
         });
 
-        // TODO: xử lý mock function cho return res.status().send()
+        // xử lý mock function cho return res.status().send()
         describe("Test caseNG", () => {
             test("It should return error message email required", () => {
                 const mockedNext = jest.fn();
                 const mockedReq = mockValidateAccount.caseNG.mockReq.missingEmail;
-                const mockedRes = {};
-                
-                mockedRes.status = () => {
-                    send: jest.fn();
-                }
+                const mockedRes = {}
+                mockedRes.status = jest.fn().mockReturnValue(mockedRes);
+                mockedRes.send = jest.fn().mockReturnValue(mockedRes);
                 const result = validateAccount(mockedReq, mockedRes, mockedNext);
-                expect(result.status(400).send).toHaveBeenCalledWith(`"email" is required`);
+                expect(mockedRes.send).toHaveBeenCalledWith(`"email" is required`);
             });
         });
     });
