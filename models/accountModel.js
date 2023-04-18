@@ -15,14 +15,14 @@ module.exports = (sequelize, Sequelize) => {
         otpKey: {
             type: Sequelize.STRING
         },
-        avatar: {
+        avatarUrl: {
             type: Sequelize.STRING
         },
         fullName: {
             type: Sequelize.STRING,
         },
-        birthDay: {
-            type: Sequelize.STRING,
+        birthday: {
+            type: Sequelize.DATE,
         },
         job: {
             type: Sequelize.STRING,

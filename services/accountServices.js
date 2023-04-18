@@ -65,7 +65,7 @@ const resetPassword = async (email, newPassword) => {
  */
 const generateToken = (email) => {
     console.log("---Called /generateTOken---");
-    return jwt.sign({ email: email }, config.secret_key, { expiresIn: 60 })
+    return jwt.sign({ email: email }, config.secret_key, { expiresIn: 3600 })
 };
 
 /**
@@ -81,6 +81,90 @@ const generateURLForgetPassword = async (email, protocol, host, ) => {
     return resetPassURL;
 }
 
+/**
+ * Service for update account profile
+ * @param {*} req 
+ * @returns 
+ */
+const updateProfile = async (req) => {
+    console.log("---Called /service update Profile---");
+    const email = req.email;
+    // Check account still exist
+    // try {
+        const account = findAccountByEmail(email);
+        if(!account) {
+            return {
+                error: true,
+                message: 'Account not exist!'
+            }
+        } else {
+            console.log("---brgin update Profile---");
+            const profileObject = await setProfileObject(
+                req.file,
+                req.body.fullName,
+                req.body.birthday,
+                req.body.job,
+                req.body.address,
+                req.body.gender,
+                req.protocol,
+                req.get('host')
+            );
+            console.log('====set object data done. profileObject= '+JSON.stringify(profileObject));
+            const result = await Account.update({ 
+                avatarUrl: profileObject.avatarUrl,
+                fullName: profileObject.fullName,
+                birthday: profileObject.birthday,
+                job: profileObject.job,
+                address: profileObject.address,
+                gender: profileObject.gender
+             }, { where: { email: email } });
+            console.log('===update Done = '+result);
+            console.log(result);
+            return result;
+        }
+    // } catch (error) {
+    //     throw Error(error.message);
+    // }  
+};
+
+/**
+ * Set profile data
+ * @param {*} file 
+ * @param {*} fullName 
+ * @param {*} birthday 
+ * @param {*} job 
+ * @param {*} address 
+ * @param {*} gender 
+ * @param {*} protocol 
+ * @param {*} host 
+ * @returns 
+ */
+const setProfileObject = (file, fullName, birthday, job, address, gender, protocol, host) => {
+    console.log('====begin set profile obj = ');
+    const profile = {}
+    //Generate and set avatar url if user send a image avatar
+    file && (profile.avatarUrl = `${protocol}://${host}/avatar/${file.originalname}`);
+    fullName && (profile.fullName = fullName);
+    birthday && (profile.birthday = new Date(birthday));
+    job && (profile.job = job);
+    address && (profile.address = address);
+    gender && (profile.gender = gender);
+    
+    return profile;
+}
+/**
+ * find Account with email given
+ * @param {} email 
+ * @returns account
+ */
+const findAccountByEmail = async (email) => {
+    const account = await Account.findOne({
+        where: {
+            email: email,
+        }
+    });
+    return account;
+};
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -90,5 +174,7 @@ module.exports = {
     generateOTP: generateOTP,
     resetPassword: resetPassword,
     generateToken: generateToken,
-    generateURLForgetPassword: generateURLForgetPassword
+    generateURLForgetPassword: generateURLForgetPassword,
+    updateProfile: updateProfile,
+    findAccountByEmail: findAccountByEmail
 }

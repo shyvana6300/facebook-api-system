@@ -24,13 +24,19 @@ const loginOTP = async (req, res) => {
     return res.status(200).send('Your OTP is: ' + otp.value);
 };
 
+/**
+ * Login to system
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const getTokenLogin = (req, res) => {
     console.log("---Called /loginToken---");
     // Generate token - expired in 60 seconds
     const token = accountServices.generateToken(req.body.email);
     // Set token to session
     req.session.tokenLogin = token;
-    return res.status(200).send(token);
+    return res.status(200).send('You has been logged in!');
 };
 
 const forgotPassword = async (req, res) => {
@@ -63,10 +69,22 @@ const testGetToken = (req, res) => {
     res.send(" ---getToken ---");
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = async (req, res) => {
     console.log("---Called /updateProfile---");
-    res.send(" ---updateProfile ---");
+    try {
+        const result = await accountServices.updateProfile(req);
+
+        if (result == 1) {
+            res.status(200).send('Your profile has been updated!');
+        }
+    } catch(error) {
+        res.status(500).send({
+            message: "Error when update profile for account " + req.email,
+            error: error
+        });
+    };
 };
+
 const tmpFunction = (req, res) => {
     console.log("---Called /HHHHH---");
     res.send(" ---tmpFunction ---");

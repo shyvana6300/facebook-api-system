@@ -1,6 +1,6 @@
 const express = require('express');
 const multer  = require('multer');
-const upload = multer({ dest: './static/img/' })
+const upload = require('../middleware/uploadAvatar');
 const account_router = express.Router();
 const accountController = require('../controller/accountController');
 const accountValidator = require('../middleware/accountValidator');
@@ -12,10 +12,10 @@ account_router.post('/login', [accountValidator.validateAccount, accountValidato
 account_router.post('/getTokenLogin', [accountValidator.validateLoginTokenSchema, accountValidator.validateLoginToken], accountController.getTokenLogin);
 // test route for api who need login 
 account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountController.testGetToken);
-
 account_router.post('/forgotPassword', accountValidator.validateEmailForgot, accountController.forgotPassword);
 account_router.post('/resetPassword/:token', [authValidator.verifyTokenResetPwd ,accountValidator.validateNewPassword], accountController.resetPassword);
-account_router.put('/updateProfile', upload.single('avatar'), accountController.updateProfile);
+account_router.put('/updateProfile', [authValidator.verifyTokenLogin, upload.single('avatar')], accountController.updateProfile);
 account_router.get('/testApi', accountController.testApi);
+
 
 module.exports = account_router;

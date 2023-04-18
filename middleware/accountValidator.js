@@ -2,6 +2,7 @@ const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
 const schema = require('../schema/schema');
 const bcrypt = require("bcryptjs");
+const accountServices = require("../services/accountServices");
 
 /**
  * check if email from request exist in DB 
@@ -21,9 +22,7 @@ const validateRegister = async (req, res, next) => {
             return res.status(400).send({
                 message: "Email has already been used by another account!"
             })
-
         }
-
         next();
     } catch (error) {
         return res.status(500).send({
@@ -32,13 +31,16 @@ const validateRegister = async (req, res, next) => {
     }
 };
 
+/**
+ * Validate account exist with given email
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const validateLogin = async (req, res, next) => {
     // check account email exists
-    let account = await Account.findOne({
-        where: {
-            email: req.body.email,
-        },
-    });
+    let account = await accountServices.findAccountByEmail(req.body.email);
     if (!account) {
         return res.status(404).send({ message: "Account not found!" });
     }
@@ -52,6 +54,14 @@ const validateLogin = async (req, res, next) => {
     }
     next();
 }
+
+/**
+ * Validate account email + password by schema
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const validateAccount = (req, res, next) => {
     // Get schema for validating
     const schemaAccount = schema.schemaAccount;
@@ -62,6 +72,14 @@ const validateAccount = (req, res, next) => {
     }
     next();
 }
+
+/**
+ * Validate account exist + otp valid
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const validateLoginToken = async (req, res, next) => {
     try {
         // TODO: tach logic sang service + tao validate param cho OTP
@@ -72,11 +90,7 @@ const validateLoginToken = async (req, res, next) => {
         const isExpired = checkExpiredOTP(otp);
         console.log('====checkExpiredOTP = ' + isExpired);
         // get account by email from request
-        let account = await Account.findOne({
-            where: {
-                email: req.body.email,
-            },
-        });
+        let account = await accountServices.findAccountByEmail(req.body.email);
         // validate request body param { email, otp}
         if (!account) {
             return res.status(404).send({ message: "Account not exist!" });
@@ -95,6 +109,13 @@ const validateLoginToken = async (req, res, next) => {
     }
 }
 
+/**
+ * Validate email by schema
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const validateEmailForgot = async (req, res, next) => {
     const schemaEmailForgot = schema.schemaEmailForgot;
     const result = schemaEmailForgot.validate(req.body);
@@ -104,6 +125,13 @@ const validateEmailForgot = async (req, res, next) => {
     next();
 }
 
+/**
+ * Validate new password by schema
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const validateNewPassword = async (req, res, next) => {
     const schemaNewPassword = schema.schemaNewPassword;
     const result = schemaNewPassword.validate(req.body);
@@ -115,6 +143,13 @@ const validateNewPassword = async (req, res, next) => {
     next();
 }
 
+/**
+ * Validate email + otp Login by schema
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 const validateLoginTokenSchema = async (req, res, next) => {
     const schemaLoginToken = schema.schemaLoginToken;
     const result = schemaLoginToken.validate(req.body);
@@ -123,6 +158,12 @@ const validateLoginTokenSchema = async (req, res, next) => {
     }
     next();
 }
+
+/**
+ * Check if otp valid
+ * @param {*} otp 
+ * @returns 
+ */
 function checkExpiredOTP(otp) {
     console.log('===checkexpired OTP: '+otp);
     if (!otp) return false

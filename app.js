@@ -26,6 +26,9 @@ app.use(
     httpOnly: true
   })
 );
+// use static folder
+app.use(express.static('static/img/avatar'));
+app.use('/avatar', express.static('static/img/avatar'));
 // Route for '/account' route
 app.use('/account', accountRoute);
 // Route for '/user' route
