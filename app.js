@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 const accountRoute = require('./routes/accountRoutes');
-const profileRoute = require('./routes/profileRoutes.js');
+const activityRoute = require('./routes/activityRoutes');
 
 // Init cors option for middleware
 var corsOptions = {
@@ -28,11 +28,13 @@ app.use(
 );
 // use static folder
 app.use(express.static('static/img/avatar'));
+app.use(express.static('static/img/status'));
 app.use('/avatar', express.static('static/img/avatar'));
+app.use('/status', express.static('static/img/status'));
 // Route for '/account' route
 app.use('/account', accountRoute);
 // Route for '/user' route
-app.use('/profile', profileRoute);
+app.use('/activity', activityRoute);
 
 app.get("/", (req, res) => {
     res.status(200).send("Hello World!");

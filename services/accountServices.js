@@ -35,7 +35,7 @@ const generateOTP = async () => {
         value: otpGenerator.generateOTP(),
         timeCreated: new Date().getTime()
     }
-    console.log('====OTP generated: ' +JSON.stringify(otp));
+    console.log('====OTP generated: ' + JSON.stringify(otp));
     return otp;
 };
 
@@ -73,7 +73,7 @@ const generateToken = (email) => {
  * @param {*} email 
  * @returns URL
  */
-const generateURLForgetPassword = async (email, protocol, host, ) => {
+const generateURLForgetPassword = async (email, protocol, host,) => {
     // Create Token - expired in 60 seconds
     const tokenForgotPass = await generateToken(email);
     // Create URL forget password
@@ -91,15 +91,15 @@ const updateProfile = async (req) => {
     const email = req.email;
     // Check account still exist
     try {
-        const account = findAccountByEmail(email);
-        if(!account) {
+        const account = await findAccountByEmail(email);
+        if (!account) {
             return {
                 error: true,
                 message: 'Account not exist!'
             }
         } else {
             console.log("---brgin update Profile---");
-            const profileObject = await setProfileObject(
+            const profileObject = await createProfileObject(
                 req.file,
                 req.body.fullName,
                 req.body.birthday,
@@ -109,22 +109,22 @@ const updateProfile = async (req) => {
                 req.protocol,
                 req.get('host')
             );
-            console.log('====set object data done. profileObject= '+JSON.stringify(profileObject));
-            const result = await Account.update({ 
+            console.log('====set object data done. profileObject= ' + JSON.stringify(profileObject));
+            const result = await Account.update({
                 avatarUrl: profileObject.avatarUrl,
                 fullName: profileObject.fullName,
                 birthday: profileObject.birthday,
                 job: profileObject.job,
                 address: profileObject.address,
                 gender: profileObject.gender
-             }, { where: { email: email } });
-            console.log('===update Done = '+result);
+            }, { where: { email: email } });
+            console.log('===update Done = ' + result);
             console.log(result);
             return result;
         }
     } catch (error) {
         throw Error(error.message);
-    }  
+    }
 };
 
 /**
@@ -139,7 +139,7 @@ const updateProfile = async (req) => {
  * @param {*} host 
  * @returns 
  */
-const setProfileObject = (file, fullName, birthday, job, address, gender, protocol, host) => {
+const createProfileObject = (file, fullName, birthday, job, address, gender, protocol, host) => {
     console.log('====begin set profile obj = ');
     const profile = {}
     //Generate and set avatar url if user send a image avatar
@@ -149,7 +149,7 @@ const setProfileObject = (file, fullName, birthday, job, address, gender, protoc
     job && (profile.job = job);
     address && (profile.address = address);
     gender && (profile.gender = gender);
-    
+
     return profile;
 }
 /**
@@ -166,11 +166,6 @@ const findAccountByEmail = async (email) => {
     return account;
 };
 
-const postStatus = (var1, var2) => {
-    console.log("---Called /HHHHH---");
-    return " ---tmpServiceFunction ---";
-};
-
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -182,6 +177,5 @@ module.exports = {
     generateToken: generateToken,
     generateURLForgetPassword: generateURLForgetPassword,
     updateProfile: updateProfile,
-    postStatus: postStatus,
     findAccountByEmail: findAccountByEmail
 }

@@ -57,7 +57,7 @@ const resetPassword = async (req, res) => {
         if (result == 1) {
             res.status(200).send('Your password has been updated!');
         }
-    } catch(error) {
+    } catch (error) {
         res.status(500).send({
             message: "Error reset password for account " + req.email
         });
@@ -77,7 +77,7 @@ const updateProfile = async (req, res) => {
         if (result == 1) {
             res.status(200).send('Your profile has been updated!');
         }
-    } catch(error) {
+    } catch (error) {
         res.status(500).send({
             message: "Error when update profile for account " + req.email,
             error: error
@@ -85,11 +85,6 @@ const updateProfile = async (req, res) => {
     };
 };
 
-const postStatus = (req, res) => {
-    console.log("---Called /postStatus---");
-    
-    res.send(" ---postStatus ---");
-};
 const tmpFunction = (req, res) => {
     console.log("---Called /HHHHH---");
     res.send(" ---tmpFunction ---");
@@ -108,7 +103,6 @@ module.exports = {
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
     updateProfile: updateProfile,
-    postStatus: postStatus,
     tmpFunction: tmpFunction,
     testApi: testApi
 };

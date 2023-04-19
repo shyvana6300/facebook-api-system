@@ -13,11 +13,7 @@ const accountServices = require("../services/accountServices");
 const validateRegister = async (req, res, next) => {
     try {
         // Check email exist
-        const result = await Account.findOne({
-            where: {
-                email: req.body.email,
-            }
-        });
+        const result = await accountServices.findAccountByEmail(req.body.email);
         if (result) {
             return res.status(400).send({
                 message: "Email has already been used by another account!"
