@@ -90,7 +90,7 @@ const updateProfile = async (req) => {
     console.log("---Called /service update Profile---");
     const email = req.email;
     // Check account still exist
-    // try {
+    try {
         const account = findAccountByEmail(email);
         if(!account) {
             return {
@@ -122,9 +122,9 @@ const updateProfile = async (req) => {
             console.log(result);
             return result;
         }
-    // } catch (error) {
-    //     throw Error(error.message);
-    // }  
+    } catch (error) {
+        throw Error(error.message);
+    }  
 };
 
 /**
@@ -165,6 +165,12 @@ const findAccountByEmail = async (email) => {
     });
     return account;
 };
+
+const postStatus = (var1, var2) => {
+    console.log("---Called /HHHHH---");
+    return " ---tmpServiceFunction ---";
+};
+
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -176,5 +182,6 @@ module.exports = {
     generateToken: generateToken,
     generateURLForgetPassword: generateURLForgetPassword,
     updateProfile: updateProfile,
+    postStatus: postStatus,
     findAccountByEmail: findAccountByEmail
 }

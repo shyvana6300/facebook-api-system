@@ -18,5 +18,16 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.accountModel = require("./accountModel")(sequelize, Sequelize);
+db.statusModel = require("./statusModel")(sequelize, Sequelize);
+db.commentModel = require("./commentModel")(sequelize, Sequelize);
+
+db.accountModel.hasMany(db.commentModel);
+db.commentModel.belongsTo(db.accountModel);
+
+db.statusModel.hasMany(db.commentModel);
+db.commentModel.belongsTo(db.statusModel);
+
+db.accountModel.hasMany(db.statusModel);
+db.statusModel.belongsTo(db.accountModel);
 
 module.exports = db;

@@ -85,6 +85,11 @@ const updateProfile = async (req, res) => {
     };
 };
 
+const postStatus = (req, res) => {
+    console.log("---Called /postStatus---");
+    
+    res.send(" ---postStatus ---");
+};
 const tmpFunction = (req, res) => {
     console.log("---Called /HHHHH---");
     res.send(" ---tmpFunction ---");
@@ -103,6 +108,7 @@ module.exports = {
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
     updateProfile: updateProfile,
+    postStatus: postStatus,
     tmpFunction: tmpFunction,
     testApi: testApi
 };

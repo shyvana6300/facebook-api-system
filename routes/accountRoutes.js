@@ -15,6 +15,7 @@ account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountContr
 account_router.post('/forgotPassword', accountValidator.validateEmailForgot, accountController.forgotPassword);
 account_router.post('/resetPassword/:token', [authValidator.verifyTokenResetPwd ,accountValidator.validateNewPassword], accountController.resetPassword);
 account_router.put('/updateProfile', [authValidator.verifyTokenLogin, upload.single('avatar')], accountController.updateProfile);
+account_router.put('/postStatus', [authValidator.verifyTokenLogin, upload.single('statusImage')], accountController.postStatus);
 account_router.get('/testApi', accountController.testApi);
 
 
