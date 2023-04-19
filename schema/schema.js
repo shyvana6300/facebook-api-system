@@ -26,9 +26,16 @@ const schemaNewPassword = Joi.object({
     newPassword: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{8,30}$')).required(),
     passwordConfirm: Joi.string().required(),
 })
+
+const schemaComment = Joi.object({
+    content: Joi.string().required(),
+    idCommentator: Joi.number().required(),
+    idStatus: Joi.number().required(),
+})
 module.exports = {
     schemaAccount: schemaAccount,
     schemaEmailForgot: schemaEmailForgot,
     schemaNewPassword: schemaNewPassword,
-    schemaLoginToken: schemaLoginToken
+    schemaLoginToken: schemaLoginToken,
+    schemaComment: schemaComment
 };

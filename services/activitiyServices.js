@@ -36,6 +36,15 @@ const postStatus = async (email, statusImage, statusContent, protocol, host) => 
     }
 };
 
+/**
+ * Create new status object
+ * @param {*} statusImage 
+ * @param {*} statusContent 
+ * @param {*} accountId 
+ * @param {*} protocol 
+ * @param {*} host 
+ * @returns 
+ */
 const createStatusObject = (statusImage, statusContent, accountId, protocol, host) => {
     const statusObject = {};
     statusContent && (statusObject.content = statusContent);
@@ -44,6 +53,19 @@ const createStatusObject = (statusImage, statusContent, accountId, protocol, hos
     return statusObject;
 }
 
+const getStatusById = async (statusId) => {
+    try {
+        const status = await Status.findOne({
+            where: {
+                id: statusId,
+            }
+        });
+        return status;
+    } catch (error) {
+        throw Error(error.message);
+    }
+}
 module.exports = {
     postStatus: postStatus,
+    getStatusById: getStatusById
 }

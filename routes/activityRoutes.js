@@ -13,4 +13,6 @@ activity_router.post('/postStatus',
     ],
     activityController.postStatus);
 
+activity_router.post('/addComment', [authValidator.verifyTokenLogin, activityValidator.validateComment], activityController.addComment);
+
 module.exports = activity_router;
