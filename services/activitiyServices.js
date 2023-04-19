@@ -1,5 +1,5 @@
 const baseModel = require("../models/baseModel");
-const Account = baseModel.accountModel;
+const Comment = baseModel.commentModel;
 const Status = baseModel.statusModel;
 const accountServices = require("./accountServices");
 
@@ -36,6 +36,21 @@ const postStatus = async (email, statusImage, statusContent, protocol, host) => 
     }
 };
 
+
+const addComment = async (idStatus, idCommenter, content) => {
+    console.log("---Called /service postStatus---");
+    try {
+        // create new comment to DB
+        const comment = await Comment.create({
+            content: content,
+            idCommenter: idCommenter,
+            idStatus: idStatus
+        })
+        return comment;
+    } catch (error) {
+        throw Error(error.message);
+    }
+};
 /**
  * Create new status object
  * @param {*} statusImage 
@@ -65,7 +80,10 @@ const getStatusById = async (statusId) => {
         throw Error(error.message);
     }
 }
+
+
 module.exports = {
     postStatus: postStatus,
-    getStatusById: getStatusById
+    getStatusById: getStatusById,
+    addComment: addComment
 }

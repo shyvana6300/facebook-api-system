@@ -29,8 +29,7 @@ const schemaNewPassword = Joi.object({
 
 const schemaComment = Joi.object({
     content: Joi.string().required(),
-    idCommentator: Joi.number().required(),
-    idStatus: Joi.number().required(),
+    idStatus: Joi.number().required()
 })
 module.exports = {
     schemaAccount: schemaAccount,

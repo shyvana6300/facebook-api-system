@@ -1,7 +1,7 @@
 const db = require("./models/baseModel");
 function connectDB () {
-    db.sequelize.sync({force: true})
-    // db.sequelize.sync()
+    // db.sequelize.sync({force: true})
+    db.sequelize.sync()
         .then(() => {
             console.log("Database is connected and synced!");
         })

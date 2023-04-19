@@ -153,7 +153,7 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
     return profile;
 }
 /**
- * find Account with email given
+ * Get Account with email given
  * @param {} email 
  * @returns account
  */
@@ -166,6 +166,23 @@ const findAccountByEmail = async (email) => {
     return account;
 };
 
+/**
+ * Find account by id
+ * @param {*} accountId 
+ * @returns account: an account with given id
+ */
+const getAccountById = async (accountId) => {
+    try {
+        const account = await Account.findOne({
+            where: {
+                id: accountId,
+            }
+        });
+        return account;
+    } catch (error) {
+        throw Error(error.message);
+    }
+}
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -177,5 +194,6 @@ module.exports = {
     generateToken: generateToken,
     generateURLForgetPassword: generateURLForgetPassword,
     updateProfile: updateProfile,
-    findAccountByEmail: findAccountByEmail
+    findAccountByEmail: findAccountByEmail,
+    getAccountById: getAccountById
 }
