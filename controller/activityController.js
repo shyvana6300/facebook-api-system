@@ -49,17 +49,48 @@ const reactStatus = async (req, res) => {
     }
 };
 
+/**
+ * Add new friend to account
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const addFriend = async (req, res) => {
     console.log("---Called /reactStatus---");
-    try {
-        const result = await activitiyServices.addFriend(req.body.idFriend, req.email);
+    // try {
+        // Call service to validate request
+        let result = activitiyServices.validateAddingFriend(req);
         if (result.error) {
             return res.status(404).send(result.message);
+        } else {
+            const accountEmail = req.email;
+            // Validate account exist
+            const account = await accountServices.findAccountByEmail(accountEmail);
+            if (!account) {
+                return res.status(404).send('Account not exist!');
+            } else {
+                const idFriend = req.body.idFriend;
+                // Validate friend account
+                const friendAccount = await accountServices.getAccountById(idFriend);
+                if (!friendAccount) {
+                    res.status(404).send('Friend account is no longer exist!');
+                } else if (idFriend == account.id) {
+                    res.status(400).send('Cannot add friend with yourself!');
+                } else {
+                    // Call service to add new friend
+                    result = await activitiyServices.addFriend(idFriend, account.id);
+                    if (result.error) {
+                        return res.status(404).send(result.message);
+                    }
+                    res.status(201).send(result);
+                }
+            }
+
         }
-        res.status(201).send(result);
-    } catch (error) {
-        res.status(500).send("Unexpected error occurred while adding friend.");
-    }
+
+    // } catch (error) {
+    //     res.status(500).send("Unexpected error occurred while adding friend.");
+    // }
 }
 module.exports = {
     postStatus: postStatus,

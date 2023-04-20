@@ -1,9 +1,10 @@
 const baseModel = require("../models/baseModel");
 const Reaction = baseModel.reactionModel;
 const Comment = baseModel.commentModel;
+const FriendShip = baseModel.friendshipModel;
 const Status = baseModel.statusModel;
 const accountServices = require("./accountServices");
-
+const schema = require('../schema/schema');
 /**
  * 
  * @param {*} email 
@@ -67,33 +68,51 @@ const addComment = async (idStatus, email, content) => {
 };
 
 /**
+ * Validate request body of adding friend
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const validateAddingFriend = async (req, res) => {
+    let result = await schema.schemaFriendship.validate(req.body);
+    if (result.error) {
+        return {
+            error: true,
+            message: result.error.details[0].message
+        }
+    }
+    return result
+}
+
+/**
  * Add new friend to user
  * @param {*} idStatus 
  * @param {*} email 
  * @returns 
  */
-const addFriend = async (idFriend, email) => {
+const addFriend = async (idFriend, idAccount) => {
     console.log("---Called /service addFriend---");
+    const transaction = await baseModel.sequelize.transaction();
     try {
-        const account = await accountServices.findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        }
         // create new friendship for user
-        const friendship = await Comment.create({
+        const friendship = await FriendShip.create({
             idFriend: idFriend,
-            accountId: account.id,
-        })
+            accountId: idAccount,
+        }, { trasaction: transaction });
         // create new friendship for friend
-        const friendshipForFriend = await Comment.create({
-            idFriend: account.id,
+        const friendshipForFriend = await FriendShip.create({
+            idFriend: idAccount,
             accountId: idFriend,
-        })
+        }, { trasaction: transaction });
+        console.log('friendship = ');
+        console.log(friendship);
+        console.log('friendshipForFriend = ');
+        console.log(friendshipForFriend);
+        await transaction.commit();
         return "Create friendship successful!";
+
     } catch (error) {
+        transaction.rollback();
         throw Error(error.message);
     }
 };
@@ -118,7 +137,7 @@ const reactStatus = async (idStatus, email) => {
         const idReactor = account.id;
         const reactionObject = {
             idReactor: idReactor,
-            statusId: idStatus 
+            statusId: idStatus
         }
         // Get Reactor by idReactor + idStatus
         const reaction = await Reaction.findOne({
@@ -183,11 +202,11 @@ const getStatusById = async (statusId) => {
     }
 }
 
-
 module.exports = {
     postStatus: postStatus,
     getStatusById: getStatusById,
     addComment: addComment,
     reactStatus: reactStatus,
-    addFriend: addFriend
+    addFriend: addFriend,
+    validateAddingFriend: validateAddingFriend
 }
