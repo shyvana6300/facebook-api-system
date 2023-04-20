@@ -1,4 +1,5 @@
 const baseModel = require("../models/baseModel");
+const Reaction = baseModel.reactionModel;
 const Comment = baseModel.commentModel;
 const Status = baseModel.statusModel;
 const accountServices = require("./accountServices");
@@ -36,14 +37,27 @@ const postStatus = async (email, statusImage, statusContent, protocol, host) => 
     }
 };
 
-
-const addComment = async (idStatus, idCommenter, content) => {
+/**
+ * Create new comment
+ * @param {*} idStatus : id status is commented
+ * @param {*} idCommenter : id user comment
+ * @param {*} content : comment's content
+ * @returns 
+ */
+const addComment = async (idStatus, email, content) => {
     console.log("---Called /service postStatus---");
     try {
+        const account = await accountServices.findAccountByEmail(email);
+        if (!account) {
+            return {
+                error: true,
+                message: 'Account not exist!'
+            }
+        }
         // create new comment to DB
         const comment = await Comment.create({
             content: content,
-            idCommenter: idCommenter,
+            idCommenter: account.id,
             idStatus: idStatus
         })
         return comment;
@@ -51,6 +65,58 @@ const addComment = async (idStatus, idCommenter, content) => {
         throw Error(error.message);
     }
 };
+
+/**
+ * 
+ * @param {*} idStatus 
+ * @param {*} email 
+ * @returns 
+ */
+const reactStatus = async (idStatus, email) => {
+    console.log('===Called reactStatus Service');
+    const transaction = await baseModel.sequelize.transaction();
+    try {
+        const account = await accountServices.findAccountByEmail(email);
+        if (!account) {
+            return {
+                error: true,
+                message: 'Account not exist!'
+            }
+        }
+        // Set variable to querry
+        const idReactor = account.id;
+        const reactionObject = {
+            idReactor: idReactor,
+            statusId: idStatus 
+        }
+        // Get Reactor by idReactor + idStatus
+        const reaction = await Reaction.findOne({
+            where: reactionObject
+        });
+        // if reaction does not exist
+        if (!reaction) {
+            // create new Reaction (like)
+            const newReaction = Reaction.create(reactionObject, { trasaction: transaction });
+            // Commit transaction
+            await transaction.commit();
+            // Return the reaction created
+            return newReaction;
+            // else if reaction exist:
+        } else {
+            // delete reaction (unlike)
+            const result = Reaction.destroy({
+                where: reactionObject,
+                force: true
+            }, { trasaction: transaction });
+            await transaction.commit();
+            return 'React unlike status successful!';
+        }
+    } catch (error) {
+        await transaction.rollback();
+        throw Error(error.message);
+    }
+}
+
 /**
  * Create new status object
  * @param {*} statusImage 
@@ -68,6 +134,11 @@ const createStatusObject = (statusImage, statusContent, accountId, protocol, hos
     return statusObject;
 }
 
+/**
+ * get status by id given
+ * @param {*} statusId 
+ * @returns 
+ */
 const getStatusById = async (statusId) => {
     try {
         const status = await Status.findOne({
@@ -85,5 +156,6 @@ const getStatusById = async (statusId) => {
 module.exports = {
     postStatus: postStatus,
     getStatusById: getStatusById,
-    addComment: addComment
+    addComment: addComment,
+    reactStatus: reactStatus
 }

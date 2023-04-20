@@ -43,13 +43,7 @@ const validateComment = async (req, res, next) => {
     if (result.error) {
         return res.status(400).send(result.error.details[0].message);
     }
-    const checkStatus = await checkStatusExist(req.body.idStatus);
-    if (!checkStatus) {
-        console.log('return status not exist message');
-        return res.status(404).send('Status is no longer exist!');
-    }
-    // TODO: confirm xem có cần check account sở hữu status có còn tồn tại ko? 
-    //=> test thử khi xóa account thì có xóa các bài viết của account đó không
+    checkStatusExist(req, res);
     next();
 }
 
@@ -58,14 +52,15 @@ const validateComment = async (req, res, next) => {
  * @param {*} statusId 
  * @returns check: true if status exist | false if status not exist
  */
-const checkStatusExist = async (statusId) => {
+const checkStatusExist = async (req, res) => {
     try {
-        console.log('===begin check status exist');
-        let check = true;
-        const status = await activitiyServices.getStatusById(statusId);
-        if (!status) check = false;
-        console.log('===end check status. KQ: ' + check);
-        return check;
+        const checkStatus = await activitiyServices.getStatusById(req.body.idStatus);
+        if (!checkStatus) {
+            return res.status(404).send('Status is no longer exist!');
+        }
+        // TODO: confirm xem có cần check account sở hữu status có còn tồn tại ko? 
+        //=> test thử khi xóa account thì có xóa các bài viết của account đó không.
+        //=> kq: xóa account thì id của account trong các stt và comment sẽ thành null
     } catch (error) {
         throw Error('An unexpected error occurred while checking status exist!');
     }
@@ -85,10 +80,7 @@ const validateReaction = async (req, res, next) => {
     if (result.error) {
         return res.status(400).send(result.error.details[0].message);
     }
-    const checkStatus = await checkStatusExist(req.body.idStatus);
-    if (!checkStatus) {
-        return res.status(404).send('Status is no longer exist! React error!');
-    }
+    checkStatusExist(req, res);
     next();
 }
 const tmpMiddleware = async (req, res, next) => {

@@ -96,7 +96,7 @@ const validateLoginToken = async (req, res, next) => {
         } else if (!req.session.otp) {
             return res.status(400).send({ message: "OTP not exist!" });
         } else if (req.session.otp.value !== req.body.otp || req.session.email !== req.body.email) {
-            return res.status(400).send({ message: "OTP not match!" });
+            return res.status(400).send({ message: "OTP or email not match!" });
         } else if (!isExpired) {
             return res.status(400).send({ message: "OTP expired! Please login again!" });
         }
