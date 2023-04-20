@@ -21,6 +21,7 @@ db.accountModel = require("./accountModel")(sequelize, Sequelize);
 db.statusModel = require("./statusModel")(sequelize, Sequelize);
 db.commentModel = require("./commentModel")(sequelize, Sequelize);
 db.reactionModel = require("./reactionModel")(sequelize, Sequelize);
+db.friendshipModel = require("./friendshipModel")(sequelize, Sequelize);
 
 // Relation account - comment
 db.accountModel.hasMany(db.commentModel, {foreignKey: 'idCommenter'});
@@ -41,4 +42,8 @@ db.reactionModel.belongsTo(db.accountModel, {foreignKey: 'idReactor'});
 // Relation status - reaction
 db.statusModel.hasMany(db.reactionModel);
 db.reactionModel.belongsTo(db.statusModel);
+
+// Relation account - friendship
+db.accountModel.hasMany(db.friendshipModel);
+db.friendshipModel.belongsTo(db.accountModel);
 module.exports = db;

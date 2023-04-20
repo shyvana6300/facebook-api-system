@@ -34,6 +34,9 @@ const schemaComment = Joi.object({
 const schemaReaction = Joi.object({
     idStatus: Joi.number().required()
 })
+const schemaFriendship = Joi.object({
+    idFriend: Joi.number().required()
+})
 module.exports = {
     schemaAccount: schemaAccount,
     schemaEmailForgot: schemaEmailForgot,
@@ -41,4 +44,5 @@ module.exports = {
     schemaLoginToken: schemaLoginToken,
     schemaComment: schemaComment,    
     schemaReaction: schemaReaction,
+    schemaFriendship: schemaFriendship
 };

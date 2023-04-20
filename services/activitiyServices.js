@@ -45,7 +45,7 @@ const postStatus = async (email, statusImage, statusContent, protocol, host) => 
  * @returns 
  */
 const addComment = async (idStatus, email, content) => {
-    console.log("---Called /service postStatus---");
+    console.log("---Called /service addComment---");
     try {
         const account = await accountServices.findAccountByEmail(email);
         if (!account) {
@@ -66,6 +66,37 @@ const addComment = async (idStatus, email, content) => {
     }
 };
 
+/**
+ * Add new friend to user
+ * @param {*} idStatus 
+ * @param {*} email 
+ * @returns 
+ */
+const addFriend = async (idFriend, email) => {
+    console.log("---Called /service addFriend---");
+    try {
+        const account = await accountServices.findAccountByEmail(email);
+        if (!account) {
+            return {
+                error: true,
+                message: 'Account not exist!'
+            }
+        }
+        // create new friendship for user
+        const friendship = await Comment.create({
+            idFriend: idFriend,
+            accountId: account.id,
+        })
+        // create new friendship for friend
+        const friendshipForFriend = await Comment.create({
+            idFriend: account.id,
+            accountId: idFriend,
+        })
+        return "Create friendship successful!";
+    } catch (error) {
+        throw Error(error.message);
+    }
+};
 /**
  * 
  * @param {*} idStatus 
@@ -157,5 +188,6 @@ module.exports = {
     postStatus: postStatus,
     getStatusById: getStatusById,
     addComment: addComment,
-    reactStatus: reactStatus
+    reactStatus: reactStatus,
+    addFriend: addFriend
 }

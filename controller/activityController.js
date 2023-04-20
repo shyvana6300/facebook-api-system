@@ -36,7 +36,7 @@ const addComment = async (req, res) => {
  * @param {*} res 
  */
 const reactStatus = async (req, res) => {
-    // try {
+    try {
         console.log("---Called /reactStatus---");
         // call logic to react a status
         const result = await activitiyServices.reactStatus(req.body.idStatus, req.email);
@@ -44,14 +44,26 @@ const reactStatus = async (req, res) => {
             return res.status(404).send(result.message);
         }
         res.status(201).send(result);
-    // } catch (error) {
-    //     res.status(500).send({
-    //         message: error.message || "Unexpected error occurred when adding new comment."
-    //     });
-    // }
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred when react status.");
+    }
 };
+
+const addFriend = async (req, res) => {
+    console.log("---Called /reactStatus---");
+    try {
+        const result = await activitiyServices.addFriend(req.body.idFriend, req.email);
+        if (result.error) {
+            return res.status(404).send(result.message);
+        }
+        res.status(201).send(result);
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred while adding friend.");
+    }
+}
 module.exports = {
     postStatus: postStatus,
     addComment: addComment,
-    reactStatus: reactStatus
+    reactStatus: reactStatus,
+    addFriend: addFriend
 }
