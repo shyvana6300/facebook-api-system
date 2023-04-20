@@ -31,10 +31,14 @@ const schemaComment = Joi.object({
     content: Joi.string().required(),
     idStatus: Joi.number().required()
 })
+const schemaReaction = Joi.object({
+    idStatus: Joi.number().required()
+})
 module.exports = {
     schemaAccount: schemaAccount,
     schemaEmailForgot: schemaEmailForgot,
     schemaNewPassword: schemaNewPassword,
     schemaLoginToken: schemaLoginToken,
-    schemaComment: schemaComment
+    schemaComment: schemaComment,    
+    schemaReaction: schemaReaction,
 };

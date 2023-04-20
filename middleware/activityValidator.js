@@ -69,14 +69,33 @@ const checkStatusExist = async (statusId) => {
     } catch (error) {
         throw Error('An unexpected error occurred while checking status exist!');
     }
-
-    next();
 }
 
+/**
+ * Validate reaction request 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+const validateReaction = async (req, res, next) => {
+    console.log('===begin validate reaction');
+    console.log(JSON.stringify(req.body));
+
+    let result = await schema.schemaReaction.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    }
+    const checkStatus = await checkStatusExist(req.body.idStatus);
+    if (!checkStatus) {
+        return res.status(404).send('Status is no longer exist! React error!');
+    }
+    next();
+}
 const tmpMiddleware = async (req, res, next) => {
     next();
 }
 module.exports = {
     validatePostStatus: validatePostStatus,
-    validateComment: validateComment
+    validateComment: validateComment,
+    validateReaction: validateReaction
 }

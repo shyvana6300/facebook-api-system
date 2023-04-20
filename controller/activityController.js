@@ -36,7 +36,25 @@ const addComment = async (req, res) => {
         });
     }
 };
+
+/**
+ * React a status
+ * @param {*} req 
+ * @param {*} res 
+ */
+const reactStatus = async (req, res) => {
+    try {
+        console.log("---Called /reactStatus---");
+        // call logic to react a status
+        const reaction = await activitiyServices.reactStatus(req);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || "Unexpected error occurred when adding new comment."
+        });
+    }
+};
 module.exports = {
     postStatus: postStatus,
-    addComment: addComment
+    addComment: addComment,
+    reactStatus: reactStatus
 }

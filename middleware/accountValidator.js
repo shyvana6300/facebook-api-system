@@ -81,8 +81,11 @@ const validateLoginToken = async (req, res, next) => {
         // TODO: tach logic sang service + tao validate param cho OTP
         console.log('====validate getToken = ');
         const otp = req.session.otp;
+        const email = req.session.email;
         console.log('-----OTP get from session: ' + JSON.stringify(otp));
         console.log('-----OTP get from request: ' + req.body.otp);
+        console.log('-----email get from session: ' + email);
+        console.log('-----email get from request: ' + req.body.email);
         const isExpired = checkExpiredOTP(otp);
         console.log('====checkExpiredOTP = ' + isExpired);
         // get account by email from request
@@ -92,7 +95,7 @@ const validateLoginToken = async (req, res, next) => {
             return res.status(404).send({ message: "Account not exist!" });
         } else if (!req.session.otp) {
             return res.status(400).send({ message: "OTP not exist!" });
-        } else if (req.session.otp.value !== req.body.otp) {
+        } else if (req.session.otp.value !== req.body.otp || req.session.email !== req.body.email) {
             return res.status(400).send({ message: "OTP not match!" });
         } else if (!isExpired) {
             return res.status(400).send({ message: "OTP expired! Please login again!" });

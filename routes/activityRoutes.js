@@ -15,4 +15,6 @@ activity_router.post('/postStatus',
 
 activity_router.post('/addComment', [authValidator.verifyTokenLogin, activityValidator.validateComment], activityController.addComment);
 
+activity_router.post('/reactStatus', [authValidator.verifyTokenLogin, activityValidator.validateReaction], activityController.reactStatus);
+
 module.exports = activity_router;

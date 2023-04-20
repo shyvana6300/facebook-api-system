@@ -18,9 +18,14 @@ const register = async (req, res, next) => {
 
 const loginOTP = async (req, res) => {
     console.log("---Called /login---");
+    console.log("---login req = ---");
+    console.log(JSON.stringify(req.body));
+    
     const otp = await accountServices.generateOTP();
     req.session.otp = otp;
+    req.session.email = req.body.email;
     console.log('-----OTP set to session: ' + JSON.stringify(otp.value));
+    console.log('-----Email set to session: ' + JSON.stringify(req.session.email));
     return res.status(200).send('Your OTP is: ' + otp.value);
 };
 
