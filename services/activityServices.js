@@ -85,6 +85,24 @@ const validateAddingFriend = async (req, res) => {
 }
 
 /**
+ * Check if friendship exist
+ * @param {*} idFriend 
+ * @param {*} idAccount
+ * Return: true - friendship exist/ false: friendship not exist 
+ */
+const isFriendShipExist = async (idFriend, idAccount) => {
+    const friendship = await FriendShip.findOne({
+        where: {
+            idFriend: parseInt(idFriend),
+            accountId: idAccount
+        }
+    });
+    if (!friendship) return false;
+    else {
+        return true;
+    }
+}
+/**
  * Add new friend to user
  * @param {*} idStatus 
  * @param {*} email 
@@ -208,5 +226,6 @@ module.exports = {
     addComment: addComment,
     reactStatus: reactStatus,
     addFriend: addFriend,
-    validateAddingFriend: validateAddingFriend
+    validateAddingFriend: validateAddingFriend,
+    isFriendShipExist: isFriendShipExist
 }

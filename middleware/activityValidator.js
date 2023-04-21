@@ -1,7 +1,7 @@
 const baseModel = require("../models/baseModel");
 const Account = baseModel.accountModel;
 const schema = require('../schema/schema');
-const activitiyServices = require("../services/activitiyServices");
+const activityServices = require("../services/activityServices");
 const accountServices = require("../services/accountServices");
 
 /**
@@ -54,7 +54,7 @@ const validateComment = async (req, res, next) => {
  */
 const checkStatusExist = async (req, res) => {
     try {
-        const checkStatus = await activitiyServices.getStatusById(req.body.idStatus);
+        const checkStatus = await activityServices.getStatusById(req.body.idStatus);
         if (!checkStatus) {
             return res.status(404).send('Status is no longer exist!');
         }

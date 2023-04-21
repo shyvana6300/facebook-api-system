@@ -1,10 +1,10 @@
-const activitiyServices = require("../services/activitiyServices");
+const activityServices = require("../services/activityServices");
 const accountServices = require("../services/accountServices");
 
 const postStatus = async (req, res) => {
     console.log("---Called /postStatus---");
     try {
-        const result = await activitiyServices.postStatus(req.email, req.file, req.body.content, req.protocol, req.get("host"));
+        const result = await activityServices.postStatus(req.email, req.file, req.body.content, req.protocol, req.get("host"));
         if (result.error) {
             return res.status(404).send(result.message);
         }
@@ -18,7 +18,7 @@ const postStatus = async (req, res) => {
 
 const addComment = async (req, res) => {
     try {
-        const result = await activitiyServices.addComment(req.body.idStatus, req.email, req.body.content);
+        const result = await activityServices.addComment(req.body.idStatus, req.email, req.body.content);
         if (result.error) {
             return res.status(404).send(result.message);
         }
@@ -39,7 +39,7 @@ const reactStatus = async (req, res) => {
     try {
         console.log("---Called /reactStatus---");
         // call logic to react a status
-        const result = await activitiyServices.reactStatus(req.body.idStatus, req.email);
+        const result = await activityServices.reactStatus(req.body.idStatus, req.email);
         if (result.error) {
             return res.status(404).send(result.message);
         }
@@ -59,7 +59,7 @@ const addFriend = async (req, res) => {
     console.log("---Called /reactStatus---");
     // try {
         // Call service to validate request
-        let result = activitiyServices.validateAddingFriend(req);
+        let result = await activityServices.validateAddingFriend(req);
         if (result.error) {
             return res.status(404).send(result.message);
         } else {
@@ -73,12 +73,14 @@ const addFriend = async (req, res) => {
                 // Validate friend account
                 const friendAccount = await accountServices.getAccountById(idFriend);
                 if (!friendAccount) {
-                    res.status(404).send('Friend account is no longer exist!');
+                    return res.status(404).send('Friend account is no longer exist!');
                 } else if (idFriend == account.id) {
-                    res.status(400).send('Cannot add friend with yourself!');
+                    return res.status(400).send('Cannot add friend with yourself!');
+                } else if(await activityServices.isFriendShipExist(idFriend, account.id)) {
+                    return res.status(400).send('Already are friend!');
                 } else {
                     // Call service to add new friend
-                    result = await activitiyServices.addFriend(idFriend, account.id);
+                    result = await activityServices.addFriend(idFriend, account.id);
                     if (result.error) {
                         return res.status(404).send(result.message);
                     }
