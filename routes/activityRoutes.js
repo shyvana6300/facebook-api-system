@@ -18,5 +18,6 @@ activity_router.post('/addComment', [authValidator.verifyTokenLogin, activityVal
 activity_router.post('/reactStatus', [authValidator.verifyTokenLogin, activityValidator.validateReaction], activityController.reactStatus);
 
 activity_router.post('/addFriend', [authValidator.verifyTokenLogin], activityController.addFriend);
+activity_router.get('/timeline', [authValidator.verifyTokenLogin], activityController.getTimeline);
 
 module.exports = activity_router;

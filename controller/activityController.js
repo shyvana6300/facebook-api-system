@@ -57,7 +57,7 @@ const reactStatus = async (req, res) => {
  */
 const addFriend = async (req, res) => {
     console.log("---Called /reactStatus---");
-    // try {
+    try {
         // Call service to validate request
         let result = await activityServices.validateAddingFriend(req);
         if (result.error) {
@@ -90,13 +90,33 @@ const addFriend = async (req, res) => {
 
         }
 
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred while adding friend.");
+    }
+}
+
+/**
+ * Get timeline
+ * @param {*} req 
+ * @param {*} res 
+ */
+const getTimeline = async (req, res) => {
+    // try {
+        console.log("---Called /getTimeline---");
+        // call logic to react a status
+        const result = await activityServices.getTimeline(req.email, req.query.limit, req.query.offset);
+        if (result.error) {
+            return res.status(404).send(result.message);
+        }
+        res.status(201).send(result);
     // } catch (error) {
-    //     res.status(500).send("Unexpected error occurred while adding friend.");
+    //     res.status(500).send("Unexpected error occurred when react status.");
     // }
 }
 module.exports = {
     postStatus: postStatus,
     addComment: addComment,
     reactStatus: reactStatus,
-    addFriend: addFriend
+    addFriend: addFriend,
+    getTimeline: getTimeline
 }

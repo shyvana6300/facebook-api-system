@@ -1,4 +1,5 @@
 const baseModel = require("../models/baseModel");
+const QueryTypes = baseModel.sequelize.QueryTypes;
 const Reaction = baseModel.reactionModel;
 const Comment = baseModel.commentModel;
 const FriendShip = baseModel.friendshipModel;
@@ -186,6 +187,59 @@ const reactStatus = async (idStatus, email) => {
 }
 
 /**
+ * Get timeline
+ * @param {*} idStatus 
+ * @param {*} email 
+ * @returns 
+ */
+const getTimeline = async (email, limitParam, offsetParam) => {
+    console.log('===Called getTimeline Service');
+    try {
+        // Validate email exist
+        const account = await accountServices.findAccountByEmail(email);
+        if (!account) {
+            return {
+                error: true,
+                message: 'Account not exist!'
+            }
+        }
+        const accountId = account.id;
+        const offset = offsetParam ? offsetParam : null;
+        const limit = limitParam ? limitParam : null;
+        let limitQuery = '';
+        if (offset && limit) {
+            console.log('=== co ca 2');
+            limitQuery = `limit ${offset}, ${limit}`;
+        } else if (offset) {
+            console.log('=== chi co offset');
+            limitQuery = `limit ${offset}`;
+        } else if (limit) {
+            console.log('=== chi co limit');
+            limitQuery = `limit ${limit}`;
+        }
+        console.log('>>>>> limitQuery = '+limitQuery);
+        // select all status of account's friends
+        const records = await baseModel.sequelize.query(
+            `SELECT st.id idStatus, st.*, email, fr.accountId, idFriend
+            FROM facebook_api_db.friendships as fr
+            left join facebook_api_db.accounts as ac
+            on fr.accountId = ac.id
+            left join facebook_api_db.statuses as st
+            on st.accountId = fr.idFriend
+            where fr.accountId = ${accountId}
+            order by updatedAt desc
+            ${limitQuery}`,
+            {
+                type: QueryTypes.SELECT
+            });
+        console.log(records);
+        return records;
+    } catch (error) {
+        throw Error(error.message);
+    }
+}
+
+/**
  * Create new status object
  * @param {*} statusImage 
  * @param {*} statusContent 
@@ -227,5 +281,6 @@ module.exports = {
     reactStatus: reactStatus,
     addFriend: addFriend,
     validateAddingFriend: validateAddingFriend,
-    isFriendShipExist: isFriendShipExist
+    isFriendShipExist: isFriendShipExist,
+    getTimeline: getTimeline
 }
