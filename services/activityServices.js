@@ -6,6 +6,8 @@ const FriendShip = baseModel.friendshipModel;
 const Status = baseModel.statusModel;
 const accountServices = require("./accountServices");
 const schema = require('../schema/schema');
+const { number } = require("joi");
+const Op = baseModel.Sequelize.Op;
 /**
  * 
  * @param {*} email 
@@ -217,7 +219,7 @@ const getTimeline = async (email, limitParam, offsetParam) => {
             console.log('=== chi co limit');
             limitQuery = `limit ${limit}`;
         }
-        console.log('>>>>> limitQuery = '+limitQuery);
+        console.log('>>>>> limitQuery = ' + limitQuery);
         // select all status of account's friends
         const records = await baseModel.sequelize.query(
             `SELECT st.id idStatus, st.*, email, fr.accountId, idFriend
@@ -274,6 +276,143 @@ const getStatusById = async (statusId) => {
     }
 }
 
+/**
+ * Get Report
+ */
+const getReport = async (email) => {
+    try {
+        // Validate account exist
+        const account = await accountServices.findAccountByEmail(email);
+        if (!account) {
+            return {
+                error: true,
+                message: 'Account not exist!'
+            }
+        }
+        // Get count data 
+        const idAccount = account.id;
+        const statusCount = await getStatusReport(idAccount);
+        const likeCount = await getLikeReport(idAccount);
+        const commentCount = await getCommentReport(idAccount);
+        const friendCount = await getFriendReport(idAccount);
+        // Create Excel file
+        const xl = require('excel4node');
+
+        const wb = new xl.Workbook();
+
+        const ws = wb.addWorksheet('Sheet 1');
+
+        let style = wb.createStyle({
+            font: {
+                color: '#FF0800',
+                size: 12
+            },
+            numberFormat: '$#,##0.00; ($#,##0.00); -'
+        });
+
+        // Hàng đầu tiên trong file excel
+        ws.cell(1, 1).string('Số bài đã viết tuần qua').style(style);
+        ws.cell(1, 2).string('Số bạn bè mới tuần qua').style(style);
+        ws.cell(1, 3).string('Số comment mới tuần qua').style(style);
+        ws.cell(1, 4).string('Số like mới tuần qua').style(style);
+        console.log('----statusCount = ');
+        console.log(statusCount);
+        console.log('----friendCount = ');
+        console.log(friendCount);
+        console.log('----commentCount = ');
+        console.log(commentCount);
+        console.log('----likeCount = ');
+        console.log(likeCount);
+        // Hàng thứ 2
+        ws.cell(2, 1).number(statusCount).style(style);
+        ws.cell(2, 2).number(friendCount).style(style);
+        ws.cell(2, 3).number(commentCount).style(style);
+        ws.cell(2, 4).number(likeCount).style(style);
+
+        // Xuất file và lưu vào public/report 
+        wb.write(`public/report/${Date.now()}.xlsx`);
+        return "success!";
+    } catch (error) {
+        throw new Error(error.message);
+    }
+
+}
+
+/**
+ * Get the number of new status in the past 1 week
+ * @param {*} accountId current account for report
+ */
+const getStatusReport = async (accountId) => {
+    const numberStatus = await Status.count({
+        col: 'id',
+        where: {
+            accountId: accountId,
+            [Op.and]: [
+                baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
+              ],
+        }
+    });
+    await console.log('====status number = ');
+    await console.log(numberStatus);
+    return numberStatus;
+}
+
+/**
+ * Get the number of new likes in the past 1 week
+ * @param {*} accountId 
+ */
+const getLikeReport = async (accountId) => {
+    const numberLike = await Reaction.count({
+        col: 'id',
+        where: {
+            idReactor: accountId,
+            [Op.and]: [
+                baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
+              ],
+        }
+    });
+    await console.log('====like number = ');
+    await console.log(numberLike);
+    return numberLike;
+}
+
+/**
+ * Get the number of new commentin the past 1 week
+ * @param {*} accountId 
+ */
+const getCommentReport = async (accountId) => {
+    const numberComment = await Comment.count({
+        col: 'id',
+        where: {
+            idCommenter: accountId,
+            [Op.and]: [
+                baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
+              ],
+        }
+    });
+    await console.log('====Comment number = ');
+    await console.log(numberComment);
+    return numberComment;
+}
+
+/**
+ * Get the number of new friends in the past 1 week
+ * @param {*} accountId 
+ */
+const getFriendReport = async (accountId) => {
+    const numberFriend = await FriendShip.count({
+        col: 'id',
+        where: {
+            accountId: accountId,
+            [Op.and]: [
+                baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
+              ],
+        }
+    });
+    await console.log('====Friend number = ');
+    await console.log(numberFriend);
+    return numberFriend;
+}
 module.exports = {
     postStatus: postStatus,
     getStatusById: getStatusById,
@@ -282,5 +421,6 @@ module.exports = {
     addFriend: addFriend,
     validateAddingFriend: validateAddingFriend,
     isFriendShipExist: isFriendShipExist,
-    getTimeline: getTimeline
+    getTimeline: getTimeline,
+    getReport: getReport
 }

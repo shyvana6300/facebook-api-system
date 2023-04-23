@@ -101,7 +101,7 @@ const addFriend = async (req, res) => {
  * @param {*} res 
  */
 const getTimeline = async (req, res) => {
-    // try {
+    try {
         console.log("---Called /getTimeline---");
         // call logic to react a status
         const result = await activityServices.getTimeline(req.email, req.query.limit, req.query.offset);
@@ -109,8 +109,26 @@ const getTimeline = async (req, res) => {
             return res.status(404).send(result.message);
         }
         res.status(201).send(result);
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred when react status.");
+    }
+}
+
+/**
+ * Get Report
+ * @param {*} req 
+ * @param {*} res 
+ */
+const getReport = async (req, res) => {
+    // try {
+        console.log("---Called /getReport---");
+        const result = await activityServices.getReport(req.email);
+        if (result.error) {
+            return res.status(404).send(result.message);
+        }
+        res.status(201).send("Create report successful!");
     // } catch (error) {
-    //     res.status(500).send("Unexpected error occurred when react status.");
+    //     res.status(500).send("Unexpected error occurred when create report.");
     // }
 }
 module.exports = {
@@ -118,5 +136,6 @@ module.exports = {
     addComment: addComment,
     reactStatus: reactStatus,
     addFriend: addFriend,
-    getTimeline: getTimeline
+    getTimeline: getTimeline,
+    getReport: getReport
 }
