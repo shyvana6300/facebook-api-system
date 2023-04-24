@@ -1,5 +1,7 @@
 const express = require('express'); 
 const helmet = require('helmet'); 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
 const app = express();
 const cors = require("cors");
 const cookieSession = require("cookie-session");
@@ -25,6 +27,12 @@ app.use(
     secret: "COOKIE_SECRET_KEY", // should use as secret environment variable
     httpOnly: true
   })
+);
+// use routes for swagger doc
+app.use(
+  '/api-docs',
+  swaggerUi.serve, 
+  swaggerUi.setup(swaggerDocument)
 );
 // use static folder
 app.use(express.static('static/img/avatar'));

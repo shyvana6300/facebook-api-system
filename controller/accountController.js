@@ -1,6 +1,16 @@
 const accountServices = require("../services/accountServices");
 
 const register = async (req, res, next) => {
+        /* 	#swagger.tags = ['Account']
+        #swagger.description = 'Endpoint to sign in a specific user' */
+
+        /*	#swagger.parameters['obj'] = {
+            in: 'body',
+            description: 'Account infor.',
+            required: true,
+            schema: { $ref: "#/definitions/Account" }
+        } */
+
     console.log("---Called /register---");
     // Save new account to DB
     try {
@@ -8,6 +18,10 @@ const register = async (req, res, next) => {
             req.body.email,
             req.body.password
         )
+        /* #swagger.responses[201] = {
+            description: 'Account created.',
+            schema: { $ref: '#/definitions/NewAccount' }
+        } */
         res.status(201).send(newAccount);
     } catch (error) {
         res.status(500).send({
@@ -17,6 +31,16 @@ const register = async (req, res, next) => {
 };
 
 const loginOTP = async (req, res) => {
+    /* 	#swagger.tags = ['Account']
+        #swagger.description = 'Endpoint to sign in a specific user' */
+
+        /*	#swagger.parameters['obj'] = {
+            in: 'body',
+            description: 'Account infor.',
+            required: true,
+            schema: { $ref: "#/definitions/Account" }
+    } */
+
     console.log("---Called /login---");
     console.log("---login req = ---");
     console.log(JSON.stringify(req.body));
