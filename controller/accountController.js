@@ -39,6 +39,7 @@ const loginOTP = async (req, res) => {
     req.session.email = req.body.email;
     console.log('-----OTP set to session: ' + JSON.stringify(otp.value));
     console.log('-----Email set to session: ' + JSON.stringify(req.session.email));
+    /* #swagger.responses[200] = { description: 'Email and password is valid - Return OTP' } */
     return res.status(200).send('Your OTP is: ' + otp.value);
 };
 
@@ -126,7 +127,7 @@ const updateProfile = async (req, res) => {
     /*	#swagger.parameters['Avatar Image'] = {
             in: 'formData',
             type: 'file',
-            description: 'Some description...',
+            description: 'Select avatar image',
         }
 
         #swagger.parameters['obj'] = {

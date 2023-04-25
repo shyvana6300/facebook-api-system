@@ -9,15 +9,23 @@ const accountServices = require("../services/accountServices");
  */
 const postStatus = async (req, res) => {
     /* 	#swagger.tags = ['Activity']
-        #swagger.description = 'Post new status' */
+        #swagger.description = 'Post new status' 
+        
+        #swagger.parameters['Status Image'] = {
+            in: 'formData',
+            type: 'file',
+            description: 'Upload status image',
+        }
+        */
+
     console.log("---Called /postStatus---");
     try {
         const result = await activityServices.postStatus(req.email, req.file, req.body.content, req.protocol, req.get("host"));
         if (result.error) {
-            /* #swagger.responses[404] = { description: 'Account commented Not Found' } */ 
+            /* #swagger.responses[404] = { description: 'Account commented Not Found' } */
             return res.status(404).send(result.message);
         }
-        /* #swagger.responses[201] = { description: 'Created New Status' } */ 
+        /* #swagger.responses[201] = { description: 'Created New Status' } */
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send({
@@ -38,10 +46,10 @@ const addComment = async (req, res) => {
     try {
         const result = await activityServices.addComment(req.body.idStatus, req.email, req.body.content);
         if (result.error) {
-            /* #swagger.responses[404] = { description: 'Status or commenter not found' } */ 
+            /* #swagger.responses[404] = { description: 'Status or commenter not found' } */
             return res.status(404).send(result.message);
         }
-        /* #swagger.responses[201] = { description: 'Created new comment' } */ 
+        /* #swagger.responses[201] = { description: 'Created new comment' } */
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send({
@@ -63,10 +71,10 @@ const reactStatus = async (req, res) => {
         // call logic to react a status
         const result = await activityServices.reactStatus(req.body.idStatus, req.email);
         if (result.error) {
-            /* #swagger.responses[404] = { description: 'Status of account reactor Not Found' } */ 
+            /* #swagger.responses[404] = { description: 'Status of account reactor Not Found' } */
             return res.status(404).send(result.message);
         }
-        /* #swagger.responses[201] = { description: 'Like/Unlike successful' } */ 
+        /* #swagger.responses[201] = { description: 'Like/Unlike successful' } */
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send("Unexpected error occurred when react status.");
@@ -92,7 +100,7 @@ const addFriend = async (req, res) => {
             const accountEmail = req.email;
             // Validate account exist
             const account = await accountServices.findAccountByEmail(accountEmail);
-            /* #swagger.responses[404] = { description: 'User Account or Friend Account Not Found' } */ 
+            /* #swagger.responses[404] = { description: 'User Account or Friend Account Not Found' } */
             if (!account) {
                 return res.status(404).send('Account not exist!');
             } else {
@@ -108,10 +116,7 @@ const addFriend = async (req, res) => {
                 } else {
                     // Call service to add new friend
                     result = await activityServices.addFriend(idFriend, account.id);
-                    // if (result.error) {
-                    //     return res.status(500).send(result.message);
-                    // }
-                    
+                    /* #swagger.responses[201] = { description: 'Add friend successful' } */
                     res.status(201).send(result);
                 }
             }
@@ -138,7 +143,8 @@ const getTimeline = async (req, res) => {
         if (result.error) {
             return res.status(404).send(result.message);
         }
-        res.status(201).send(result);
+        /* #swagger.responses[200] = { description: 'Get timeline successful' } */
+        res.status(200).send(result);
     } catch (error) {
         res.status(500).send("Unexpected error occurred when react status.");
     }
@@ -158,6 +164,7 @@ const getReport = async (req, res) => {
         if (result.error) {
             return res.status(404).send(result.message);
         }
+        /* #swagger.responses[201] = { description: 'Create report successful' } */
         res.status(201).send("Create report successful!");
     } catch (error) {
         res.status(500).send("Unexpected error occurred when create report.");

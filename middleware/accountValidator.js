@@ -38,6 +38,7 @@ const validateLogin = async (req, res, next) => {
     // check account email exists
     let account = await accountServices.findAccountByEmail(req.body.email);
     if (!account) {
+        /* #swagger.responses[404] = { description: 'Account Not Found' } */
         return res.status(404).send({ message: "Account not found!" });
     }
     // check password valid
@@ -46,7 +47,7 @@ const validateLogin = async (req, res, next) => {
         account.password
     );
     if (!checkPassword) {
-        return res.status(401).send('Invalid password!');
+        return res.status(400).send('Invalid password!');
     }
     next();
 }
@@ -137,6 +138,7 @@ const validateEmailForgot = async (req, res, next) => {
 const validateNewPassword = async (req, res, next) => {
     const schemaNewPassword = schema.schemaNewPassword;
     const result = schemaNewPassword.validate(req.body);
+    /* #swagger.responses[400] = { description: 'Invalid input' } */
     if (result.error) {
         return res.status(400).send(result.error.details[0].message);
     } else if (req.body.passwordConfirm !== req.body.newPassword) {

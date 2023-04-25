@@ -80,16 +80,13 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Email and password is valid - Return OTP"
           },
           "400": {
             "description": "Invalid email or password"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "404": {
-            "description": "Not Found"
+            "description": "Account Not Found"
           }
         }
       }
@@ -191,7 +188,7 @@
             "description": "Create new password successful"
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Invalid input"
           },
           "401": {
             "description": "Unauthorized token"
@@ -213,7 +210,7 @@
             "name": "Avatar Image",
             "in": "formData",
             "type": "file",
-            "description": "Some description..."
+            "description": "Select avatar image"
           },
           {
             "name": "obj",
@@ -230,9 +227,6 @@
           },
           "401": {
             "description": "Unauthorized or expired token"
-          },
-          "403": {
-            "description": "Token is not provided"
           },
           "500": {
             "description": "Internal Server Error"
@@ -253,9 +247,6 @@
           },
           "401": {
             "description": "Unauthorized or expired token"
-          },
-          "403": {
-            "description": "Token is not provided"
           }
         }
       }
@@ -282,6 +273,12 @@
         "description": "Post new status",
         "parameters": [
           {
+            "name": "Status Image",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload status image"
+          },
+          {
             "name": "body",
             "in": "body",
             "schema": {
@@ -303,9 +300,6 @@
           },
           "401": {
             "description": "Unauthorized or expired token"
-          },
-          "403": {
-            "description": "Token is not provided"
           },
           "404": {
             "description": "Account commented Not Found"
@@ -349,9 +343,6 @@
           "401": {
             "description": "Unauthorized or expired token"
           },
-          "403": {
-            "description": "Token is not provided"
-          },
           "404": {
             "description": "Status or commenter not found"
           },
@@ -391,11 +382,8 @@
           "401": {
             "description": "Unauthorized or expired token"
           },
-          "403": {
-            "description": "Token is not provided"
-          },
           "404": {
-            "description": "Account reactor Not Found"
+            "description": "Status of account reactor Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -425,16 +413,13 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Add friend successful"
           },
           "400": {
             "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized or expired token"
-          },
-          "403": {
-            "description": "Token is not provided"
           },
           "404": {
             "description": "User Account or Friend Account Not Found"
@@ -470,9 +455,6 @@
           "401": {
             "description": "Unauthorized or expired token"
           },
-          "403": {
-            "description": "Token is not provided"
-          },
           "404": {
             "description": "Not Found"
           },
@@ -495,9 +477,6 @@
           },
           "401": {
             "description": "Unauthorized or expired token"
-          },
-          "403": {
-            "description": "Token is not provided"
           },
           "404": {
             "description": "Not Found"
