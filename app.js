@@ -1,5 +1,5 @@
-const express = require('express'); 
-const helmet = require('helmet'); 
+const express = require('express');
+const helmet = require('helmet');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger-output.json');
 const app = express();
@@ -11,7 +11,7 @@ const activityRoute = require('./routes/activityRoutes');
 // Init cors option for middleware
 var corsOptions = {
     origin: "http://localhost:8081"
-  };
+};
 
 // Use cors for middleware
 app.use(cors(corsOptions));
@@ -22,30 +22,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // use cookei session
 app.use(
-  cookieSession({
-    name: "shyvana-test-session",
-    secret: "COOKIE_SECRET_KEY", // should use as secret environment variable
-    httpOnly: true
-  })
+    cookieSession({
+        name: "shyvana-test-session",
+        secret: "COOKIE_SECRET_KEY", // should use as secret environment variable
+        httpOnly: true
+    })
 );
-// use routes for swagger doc
-app.use(
-  '/api-docs',
-  swaggerUi.serve, 
-  swaggerUi.setup(swaggerDocument)
-);
+
 // use static folder
 app.use(express.static('static/img/avatar'));
 app.use(express.static('static/img/status'));
 app.use('/avatar', express.static('static/img/avatar'));
 app.use('/status', express.static('static/img/status'));
+// Route for swagger doc
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Route for '/account' route
 app.use('/account', accountRoute);
 // Route for '/user' route
 app.use('/activity', activityRoute);
-
-app.get("/", (req, res) => {
-    res.status(200).send("Hello World!");
-  });
 
 module.exports = app;

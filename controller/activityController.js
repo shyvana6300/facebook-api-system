@@ -1,13 +1,31 @@
 const activityServices = require("../services/activityServices");
 const accountServices = require("../services/accountServices");
 
+/**
+ * Handle post status request
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const postStatus = async (req, res) => {
+    /* 	#swagger.tags = ['Activity']
+        #swagger.description = 'Post new status' 
+        
+        #swagger.parameters['Status Image'] = {
+            in: 'formData',
+            type: 'file',
+            description: 'Upload status image',
+        }
+        */
+
     console.log("---Called /postStatus---");
     try {
         const result = await activityServices.postStatus(req.email, req.file, req.body.content, req.protocol, req.get("host"));
         if (result.error) {
+            /* #swagger.responses[404] = { description: 'Account commented Not Found' } */
             return res.status(404).send(result.message);
         }
+        /* #swagger.responses[201] = { description: 'Created New Status' } */
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send({
@@ -16,12 +34,22 @@ const postStatus = async (req, res) => {
     }
 };
 
+/**
+ * Handle add new comment request
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const addComment = async (req, res) => {
+    /* 	#swagger.tags = ['Activity']
+        #swagger.description = 'Add a new comment' */
     try {
         const result = await activityServices.addComment(req.body.idStatus, req.email, req.body.content);
         if (result.error) {
+            /* #swagger.responses[404] = { description: 'Status or commenter not found' } */
             return res.status(404).send(result.message);
         }
+        /* #swagger.responses[201] = { description: 'Created new comment' } */
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send({
@@ -36,13 +64,17 @@ const addComment = async (req, res) => {
  * @param {*} res 
  */
 const reactStatus = async (req, res) => {
+    /* 	#swagger.tags = ['Activity']
+    #swagger.description = 'Like/Unlike a status' */
     try {
         console.log("---Called /reactStatus---");
         // call logic to react a status
         const result = await activityServices.reactStatus(req.body.idStatus, req.email);
         if (result.error) {
+            /* #swagger.responses[404] = { description: 'Status of account reactor Not Found' } */
             return res.status(404).send(result.message);
         }
+        /* #swagger.responses[201] = { description: 'Like/Unlike successful' } */
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send("Unexpected error occurred when react status.");
@@ -56,7 +88,9 @@ const reactStatus = async (req, res) => {
  * @returns 
  */
 const addFriend = async (req, res) => {
-    console.log("---Called /reactStatus---");
+    /* 	#swagger.tags = ['Activity']
+    #swagger.description = 'Add a friend' */
+    console.log("---Called /addFriend---");
     try {
         // Call service to validate request
         let result = await activityServices.validateAddingFriend(req);
@@ -66,6 +100,7 @@ const addFriend = async (req, res) => {
             const accountEmail = req.email;
             // Validate account exist
             const account = await accountServices.findAccountByEmail(accountEmail);
+            /* #swagger.responses[404] = { description: 'User Account or Friend Account Not Found' } */
             if (!account) {
                 return res.status(404).send('Account not exist!');
             } else {
@@ -76,14 +111,12 @@ const addFriend = async (req, res) => {
                     return res.status(404).send('Friend account is no longer exist!');
                 } else if (idFriend == account.id) {
                     return res.status(400).send('Cannot add friend with yourself!');
-                } else if(await activityServices.isFriendShipExist(idFriend, account.id)) {
+                } else if (await activityServices.isFriendShipExist(idFriend, account.id)) {
                     return res.status(400).send('Already are friend!');
                 } else {
                     // Call service to add new friend
                     result = await activityServices.addFriend(idFriend, account.id);
-                    if (result.error) {
-                        return res.status(404).send(result.message);
-                    }
+                    /* #swagger.responses[201] = { description: 'Add friend successful' } */
                     res.status(201).send(result);
                 }
             }
@@ -101,6 +134,8 @@ const addFriend = async (req, res) => {
  * @param {*} res 
  */
 const getTimeline = async (req, res) => {
+    /* 	#swagger.tags = ['Activity']
+    #swagger.description = 'Timeline of friend activity' */
     try {
         console.log("---Called /getTimeline---");
         // call logic to react a status
@@ -108,7 +143,8 @@ const getTimeline = async (req, res) => {
         if (result.error) {
             return res.status(404).send(result.message);
         }
-        res.status(201).send(result);
+        /* #swagger.responses[200] = { description: 'Get timeline successful' } */
+        res.status(200).send(result);
     } catch (error) {
         res.status(500).send("Unexpected error occurred when react status.");
     }
@@ -120,16 +156,19 @@ const getTimeline = async (req, res) => {
  * @param {*} res 
  */
 const getReport = async (req, res) => {
-    // try {
+    /* 	#swagger.tags = ['Activity']
+    #swagger.description = 'Get report of account activity pass a week' */
+    try {
         console.log("---Called /getReport---");
         const result = await activityServices.getReport(req.email);
         if (result.error) {
             return res.status(404).send(result.message);
         }
+        /* #swagger.responses[201] = { description: 'Create report successful' } */
         res.status(201).send("Create report successful!");
-    // } catch (error) {
-    //     res.status(500).send("Unexpected error occurred when create report.");
-    // }
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred when create report.");
+    }
 }
 module.exports = {
     postStatus: postStatus,

@@ -9,7 +9,11 @@
   "main": "main.js",
   "scripts": {
     "jest": "jest --env=node --colors --coverage test",
-    "test": "jest"
+    "test": "jest",
+    "start": "node main.js"
+  },
+  "engine" : {
+    "node": "18.15.0"
   },
   "author": "LongNH",
   "license": "ISC",

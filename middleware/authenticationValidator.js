@@ -6,8 +6,9 @@ const Account = baseModel.accountModel;
 const verifyTokenLogin = (req, res, next) => {
     let token = req.session.tokenLogin;
     // check if token exist
+    /* #swagger.responses[401] = { description: 'Unauthorized or expired token' } */
     if(!token) {
-        return res.status(403).send('No token provided!')
+        return res.status(401).send('No token provided!')
     }
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
@@ -25,6 +26,7 @@ const verifyTokenResetPwd = (req, res, next) => {
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
         if (error) {
+            /* #swagger.responses[401] = { description: 'Unauthorized token' } */
             return res.status(401).send('Token Reset Unauthorized!');
         }
         console.log('===Token Reset verified!! Pass!!');
