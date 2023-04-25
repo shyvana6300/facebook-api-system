@@ -174,7 +174,7 @@ const reactStatus = async (idStatus, email) => {
             // else if reaction exist:
         } else {
             // delete reaction (unlike)
-            const result = Reaction.destroy({
+            Reaction.destroy({
                 where: reactionObject,
                 force: true
             }, { trasaction: transaction });

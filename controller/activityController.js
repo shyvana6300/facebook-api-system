@@ -63,7 +63,7 @@ const reactStatus = async (req, res) => {
         // call logic to react a status
         const result = await activityServices.reactStatus(req.body.idStatus, req.email);
         if (result.error) {
-            /* #swagger.responses[404] = { description: 'Account reactor Not Found' } */ 
+            /* #swagger.responses[404] = { description: 'Status of account reactor Not Found' } */ 
             return res.status(404).send(result.message);
         }
         /* #swagger.responses[201] = { description: 'Like/Unlike successful' } */ 
