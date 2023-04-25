@@ -15,8 +15,11 @@ module.exports = {
             emptyEmail: {
                 body: { email: '' }
             },
-            invalidEmail: {
+            invalidEmailNumber: {
                 body: { email: 1234 }
+            },
+            invalidEmailFormat: {
+                body: { email: 's' }
             },
             missingPassword: {
                 body: {

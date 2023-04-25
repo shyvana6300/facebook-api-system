@@ -5,6 +5,24 @@ const bcrypt = require("bcryptjs");
 const accountServices = require("../services/accountServices");
 
 /**
+ * Validate account email + password by schema
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+const validateAccount = (req, res, next) => {
+    // Get schema for validating
+    const schemaAccount = schema.schemaAccount;
+    // Validate req body
+    let result = schemaAccount.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    }
+    next();
+}
+
+/**
  * check if email from request exist in DB 
  * @param {} req 
  * @param {*} res 
@@ -47,24 +65,6 @@ const validateLogin = async (req, res, next) => {
     );
     if (!checkPassword) {
         return res.status(401).send('Invalid password!');
-    }
-    next();
-}
-
-/**
- * Validate account email + password by schema
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
- */
-const validateAccount = (req, res, next) => {
-    // Get schema for validating
-    const schemaAccount = schema.schemaAccount;
-    // Validate req body
-    let result = schemaAccount.validate(req.body);
-    if (result.error) {
-        return res.status(400).send(result.error.details[0].message);
     }
     next();
 }

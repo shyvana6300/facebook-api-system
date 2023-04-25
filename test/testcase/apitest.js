@@ -1,6 +1,6 @@
 const request = require('supertest');
-const app = require('../app');
-const connectDB = require("../dbconnector");
+const app = require('../../app');
+const connectDB = require("../../dbconnector");
 
 describe("Test the root path", () => {
     test("It should response the GET method", done => {
