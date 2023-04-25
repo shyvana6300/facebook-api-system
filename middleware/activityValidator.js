@@ -24,7 +24,7 @@ const validatePostStatus = async (req, res, next) => {
         contentIsMissing = true;
     }
     // return message error if req does not contains both file and content 
-    if (fileIsMissing && contentIsMissing) return res.status(404).send({ message: "Please enter content or image!" });
+    if (fileIsMissing && contentIsMissing) return res.status(400).send({ message: "Please enter content or image!" });
     next();
 }
 
@@ -36,11 +36,9 @@ const validatePostStatus = async (req, res, next) => {
  * @returns 
  */
 const validateComment = async (req, res, next) => {
-    console.log('===begin validate comment');
-    console.log(JSON.stringify(req.body));
-
     let result = await schema.schemaComment.validate(req.body);
     if (result.error) {
+        /* #swagger.responses[400] = { description: 'Invalid comment input' } */   
         return res.status(400).send(result.error.details[0].message);
     }
     checkStatusExist(req, res);
@@ -56,11 +54,12 @@ const checkStatusExist = async (req, res) => {
     try {
         const checkStatus = await activityServices.getStatusById(req.body.idStatus);
         if (!checkStatus) {
-            return res.status(404).send('Status is no longer exist!');
+            return res.status(404).send('Status does not exist!');
         }
-        // TODO: confirm xem có cần check account sở hữu status có còn tồn tại ko? 
+        // Done:confirm xem có cần check account sở hữu status có còn tồn tại ko? 
         //=> test thử khi xóa account thì có xóa các bài viết của account đó không.
         //=> kq: xóa account thì id của account trong các stt và comment sẽ thành null
+        //=> Đã validate trong service
     } catch (error) {
         throw Error('An unexpected error occurred while checking status exist!');
     }

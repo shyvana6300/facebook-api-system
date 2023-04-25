@@ -149,7 +149,7 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
     job && (profile.job = job);
     address && (profile.address = address);
     gender && (profile.gender = gender);
-
+    
     return profile;
 }
 /**

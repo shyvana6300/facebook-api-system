@@ -59,11 +59,18 @@ const validateLogin = async (req, res, next) => {
  * @returns 
  */
 const validateAccount = (req, res, next) => {
+    /*	#swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Account infor.',
+    required: true,
+    schema: { $ref: "#/definitions/Account" }
+} */
     // Get schema for validating
     const schemaAccount = schema.schemaAccount;
     // Validate req body
     let result = schemaAccount.validate(req.body);
     if (result.error) {
+        // #swagger.responses[400] = { description: 'Invalid email or password' }
         return res.status(400).send(result.error.details[0].message);
     }
     next();
@@ -78,28 +85,23 @@ const validateAccount = (req, res, next) => {
  */
 const validateLoginToken = async (req, res, next) => {
     try {
-        // TODO: tach logic sang service + tao validate param cho OTP
-        console.log('====validate getToken = ');
         const otp = req.session.otp;
-        const email = req.session.email;
-        console.log('-----OTP get from session: ' + JSON.stringify(otp));
-        console.log('-----OTP get from request: ' + req.body.otp);
-        console.log('-----email get from session: ' + email);
-        console.log('-----email get from request: ' + req.body.email);
+        const emailSession = req.session.email;
         const isExpired = checkExpiredOTP(otp);
-        console.log('====checkExpiredOTP = ' + isExpired);
         // get account by email from request
         let account = await accountServices.findAccountByEmail(req.body.email);
         // validate request body param { email, otp}
+        /* #swagger.responses[404] = { description: 'OTP or account not found || OTP expired' } */
         if (!account) {
             return res.status(404).send({ message: "Account not exist!" });
         } else if (!req.session.otp) {
-            return res.status(400).send({ message: "OTP not exist!" });
-        } else if (req.session.otp.value !== req.body.otp || req.session.email !== req.body.email) {
+            return res.status(404).send({ message: "OTP not exist!" });
+        } else if (req.session.otp.value !== req.body.otp || emailSession !== req.body.email) {
             return res.status(400).send({ message: "OTP or email not match!" });
         } else if (!isExpired) {
-            return res.status(400).send({ message: "OTP expired! Please login again!" });
+            return res.status(404).send({ message: "OTP expired! Please login again!" });
         }
+        
         next();
     } catch (error) {
         return res.status(500).send({
@@ -119,6 +121,7 @@ const validateEmailForgot = async (req, res, next) => {
     const schemaEmailForgot = schema.schemaEmailForgot;
     const result = schemaEmailForgot.validate(req.body);
     if (result.error) {
+        /* #swagger.responses[400] = { description: 'Invalid email' } */
         return res.status(400).send(result.error.details[0].message);
     }
     next();
@@ -153,6 +156,7 @@ const validateLoginTokenSchema = async (req, res, next) => {
     const schemaLoginToken = schema.schemaLoginToken;
     const result = schemaLoginToken.validate(req.body);
     if (result.error) {
+        /* #swagger.responses[400] = { description: 'Invalid email or OTP' } */
         return res.status(400).send(result.error.details[0].message);
     }
     next();
@@ -164,7 +168,7 @@ const validateLoginTokenSchema = async (req, res, next) => {
  * @returns 
  */
 function checkExpiredOTP(otp) {
-    console.log('===checkexpired OTP: '+otp);
+    console.log('===checkexpired OTP: ' + otp);
     if (!otp) return false
     const currentTime = new Date().getTime();
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;

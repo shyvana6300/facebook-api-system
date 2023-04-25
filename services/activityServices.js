@@ -127,7 +127,6 @@ const addFriend = async (idFriend, idAccount) => {
         }, { trasaction: transaction });
         console.log('friendship = ');
         console.log(friendship);
-        console.log('friendshipForFriend = ');
         console.log(friendshipForFriend);
         await transaction.commit();
         return "Create friendship successful!";
@@ -277,7 +276,9 @@ const getStatusById = async (statusId) => {
 }
 
 /**
- * Get Report
+ * Get report for a week
+ * @param {*} email: account email for report
+ * @returns 
  */
 const getReport = async (email) => {
     try {
@@ -307,7 +308,7 @@ const getReport = async (email) => {
                 color: '#FF0800',
                 size: 12
             },
-            numberFormat: '$#,##0.00; ($#,##0.00); -'
+            numberFormat: '##0'
         });
 
         // Hàng đầu tiên trong file excel
@@ -329,9 +330,10 @@ const getReport = async (email) => {
         ws.cell(2, 3).number(commentCount).style(style);
         ws.cell(2, 4).number(likeCount).style(style);
 
-        // Xuất file và lưu vào public/report 
-        wb.write(`public/report/${Date.now()}.xlsx`);
-        return "success!";
+        // Xuất file và lưu vào public/report
+        const date = new Date();
+        wb.write(`public/report/Report_${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}.xlsx`);
+        return "Create report success!";
     } catch (error) {
         throw new Error(error.message);
     }

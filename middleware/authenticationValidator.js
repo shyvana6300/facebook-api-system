@@ -7,11 +7,13 @@ const verifyTokenLogin = (req, res, next) => {
     let token = req.session.tokenLogin;
     // check if token exist
     if(!token) {
+        /* #swagger.responses[403] = { description: 'Token is not provided' } */
         return res.status(403).send('No token provided!')
     }
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
         if (error) {
+            /* #swagger.responses[401] = { description: 'Unauthorized or expired token' } */
             return res.status(401).send('Token Unauthorized or Expired!');
         }
         console.log('===Token verified!! Pass!!');
@@ -25,6 +27,7 @@ const verifyTokenResetPwd = (req, res, next) => {
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
         if (error) {
+            /* #swagger.responses[401] = { description: 'Unauthorized token' } */
             return res.status(401).send('Token Reset Unauthorized!');
         }
         console.log('===Token Reset verified!! Pass!!');
