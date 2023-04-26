@@ -1,0 +1,30 @@
+// Test validateLogin()
+    describe("Test validateLogin()", () => {
+        const validateLogin = accountValidator.validateLogin;
+        // Case OK
+        test("It should call the next() function", async () => {
+            accountServices.findAccountByEmail = jest.fn((email) => 'sample result');
+            bcrypt.compareSync = jest.fn((reqPassword, accountPassword) => true);
+            const mockedRes = mockRes.CaseOK;
+            await validateLogin(mockReqOK, mockedRes, mockedNext);
+            expect(mockedNext).toHaveBeenCalled();
+        });
+
+    //     // Case NG1: account not found
+        test("It should return the error message account not found", async () => {
+            accountServices.findAccountByEmail = jest.fn((email) => null);
+            const mockedRes = mockRes.CaseNG;
+            await validateLogin(mockReqOK, mockedRes, mockedNext);
+            expect(mockedRes.status).toHaveBeenCalledWith(404);
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: "Account not found!" });
+        });
+
+        // Case NG2: password not match
+        test("It should return the error message invalid password", async () => {
+            accountServices.findAccountByEmail = jest.fn((email) => null);
+            const mockedRes = mockRes.CaseNG;
+            await validateLogin(mockReqOK, mockedRes, mockedNext);
+            expect(mockedRes.status).toHaveBeenCalledWith(404);
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: "Account not found!" });
+        })
+    })

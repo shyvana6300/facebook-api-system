@@ -41,28 +41,7 @@ const validateComment = async (req, res, next) => {
         /* #swagger.responses[400] = { description: 'Invalid comment input' } */   
         return res.status(400).send(result.error.details[0].message);
     }
-    checkStatusExist(req, res);
     next();
-}
-
-/**
- * Check if status with given id exist
- * @param {*} statusId 
- * @returns check: true if status exist | false if status not exist
- */
-const checkStatusExist = async (req, res) => {
-    try {
-        const checkStatus = await activityServices.getStatusById(req.body.idStatus);
-        if (!checkStatus) {
-            return res.status(404).send('Status does not exist!');
-        }
-        // Done:confirm xem có cần check account sở hữu status có còn tồn tại ko? 
-        //=> test thử khi xóa account thì có xóa các bài viết của account đó không.
-        //=> kq: xóa account thì id của account trong các stt và comment sẽ thành null
-        //=> Đã validate trong service
-    } catch (error) {
-        throw Error('An unexpected error occurred while checking status exist!');
-    }
 }
 
 /**
@@ -79,7 +58,6 @@ const validateReaction = async (req, res, next) => {
     if (result.error) {
         return res.status(400).send(result.error.details[0].message);
     }
-    checkStatusExist(req, res);
     next();
 }
 const tmpMiddleware = async (req, res, next) => {

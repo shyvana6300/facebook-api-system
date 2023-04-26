@@ -36,12 +36,18 @@
         "description": "Sign up a specific account",
         "parameters": [
           {
-            "name": "obj",
+            "name": "body",
             "in": "body",
-            "description": "Account infor.",
-            "required": true,
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
             }
           }
         ],
@@ -53,7 +59,7 @@
             }
           },
           "400": {
-            "description": "Invalid email or password"
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
@@ -83,7 +89,7 @@
             "description": "Email and password is valid - Return OTP"
           },
           "400": {
-            "description": "Invalid email or password"
+            "description": "Bad Request"
           },
           "404": {
             "description": "Account Not Found"
@@ -230,6 +236,20 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/account/primeUpgrade": {
+      "put": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized or expired token"
           }
         }
       }
@@ -449,8 +469,8 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "Get timeline successful"
           },
           "401": {
             "description": "Unauthorized or expired token"
@@ -473,7 +493,7 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Create report successful"
           },
           "401": {
             "description": "Unauthorized or expired token"

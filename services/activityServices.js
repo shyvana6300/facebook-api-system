@@ -15,18 +15,10 @@ const Op = baseModel.Sequelize.Op;
  * @param {*} statusContent 
  * @returns 
  */
-const postStatus = async (email, statusImage, statusContent, protocol, host) => {
+const postStatus = async (accountId, statusImage, statusContent, protocol, host) => {
     console.log("---Called /service postStatus---");
     // get account by email from request
     try {
-        const account = await accountServices.findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        }
-        const accountId = account.id;
         // create StatusObject with data from request
         const statusObject = createStatusObject(statusImage, statusContent, accountId, protocol, host);
         // create new status to DB with StatusObject created
@@ -48,20 +40,14 @@ const postStatus = async (email, statusImage, statusContent, protocol, host) => 
  * @param {*} content : comment's content
  * @returns 
  */
-const addComment = async (idStatus, email, content) => {
+const addComment = async (idStatus, idAccount, content) => {
     console.log("---Called /service addComment---");
     try {
-        const account = await accountServices.findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        }
+        
         // create new comment to DB
         const comment = await Comment.create({
             content: content,
-            idCommenter: account.id,
+            idCommenter: idAccount,
             idStatus: idStatus
         })
         return comment;
@@ -142,19 +128,10 @@ const addFriend = async (idFriend, idAccount) => {
  * @param {*} email 
  * @returns 
  */
-const reactStatus = async (idStatus, email) => {
+const reactStatus = async (idStatus, idReactor) => {
     console.log('===Called reactStatus Service');
     const transaction = await baseModel.sequelize.transaction();
     try {
-        const account = await accountServices.findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        }
-        // Set variable to querry
-        const idReactor = account.id;
         const reactionObject = {
             idReactor: idReactor,
             statusId: idStatus
@@ -193,18 +170,9 @@ const reactStatus = async (idStatus, email) => {
  * @param {*} email 
  * @returns 
  */
-const getTimeline = async (email, limitParam, offsetParam) => {
+const getTimeline = async (accountId, limitParam, offsetParam) => {
     console.log('===Called getTimeline Service');
     try {
-        // Validate email exist
-        const account = await accountServices.findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        }
-        const accountId = account.id;
         const offset = offsetParam ? offsetParam : null;
         const limit = limitParam ? limitParam : null;
         let limitQuery = '';
@@ -280,18 +248,8 @@ const getStatusById = async (statusId) => {
  * @param {*} email: account email for report
  * @returns 
  */
-const getReport = async (email) => {
+const getReport = async (idAccount) => {
     try {
-        // Validate account exist
-        const account = await accountServices.findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        }
-        // Get count data 
-        const idAccount = account.id;
         const statusCount = await getStatusReport(idAccount);
         const likeCount = await getLikeReport(idAccount);
         const commentCount = await getCommentReport(idAccount);

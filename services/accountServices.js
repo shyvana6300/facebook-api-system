@@ -157,6 +157,7 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
  * @param {} email 
  * @returns account
  */
+// TODO: gộp hàm này với hàm getAccountIdIfExist, cho hàm getAccountId -> getAccount, trả về account
 const findAccountByEmail = async (email) => {
     const account = await Account.findOne({
         where: {
@@ -183,6 +184,23 @@ const getAccountById = async (accountId) => {
         throw Error(error.message);
     }
 }
+
+/**
+ * Get account id if account exist
+ * @param {*} req 
+ * @param {*} res 
+ * @returns id: id account | res.status(404) if account not exist
+ */
+const getAccountIdIfExist = async (req, res) => {
+    console.log("---Called /HHHHH---");
+    // Check if account exist
+    const account = await findAccountByEmail(req.email);
+    if (!account) {
+        return res.status(404).send({ message: 'Account not exist!'});
+    }
+    return account.id;
+};
+
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -195,5 +213,6 @@ module.exports = {
     generateURLForgetPassword: generateURLForgetPassword,
     updateProfile: updateProfile,
     findAccountByEmail: findAccountByEmail,
-    getAccountById: getAccountById
+    getAccountById: getAccountById,
+    getAccountIdIfExist: getAccountIdIfExist
 }

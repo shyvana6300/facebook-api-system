@@ -24,6 +24,7 @@ const register = async (req, res, next) => {
 };
 
 const loginOTP = async (req, res) => {
+    console.log("---Called /login---");
     /* 	#swagger.tags = ['Account']
         #swagger.description = 'Sign in a specific user to get OTP login' */
 
@@ -33,12 +34,10 @@ const loginOTP = async (req, res) => {
         required: true,
         schema: { $ref: "#/definitions/Account" }
     } */
-    console.log("---Called /login---");
+
     const otp = await accountServices.generateOTP();
     req.session.otp = otp;
     req.session.email = req.body.email;
-    console.log('-----OTP set to session: ' + JSON.stringify(otp.value));
-    console.log('-----Email set to session: ' + JSON.stringify(req.session.email));
     /* #swagger.responses[200] = { description: 'Email and password is valid - Return OTP' } */
     return res.status(200).send('Your OTP is: ' + otp.value);
 };
@@ -138,12 +137,8 @@ const updateProfile = async (req, res) => {
     console.log("---Called /updateProfile---");
     try {
         const result = await accountServices.updateProfile(req);
-
-        // if (result == 1) {
-            
-        // }
         /* #swagger.responses[200] = { description: 'Update profile successful' } */
-        res.status(200).send('Your profile has been updated!');
+        res.status(200).send(result);
     } catch (error) {
         /* #swagger.responses[500] = { description: '' } */
         res.status(500).send({
@@ -151,6 +146,11 @@ const updateProfile = async (req, res) => {
             error: error
         });
     };
+};
+
+const primeUpgrade = (req, res) => {
+    console.log("---Called /primeUpgrade---");
+    res.send(" ---primeUpgrade ---");
 };
 
 const tmpFunction = (req, res) => {
@@ -173,6 +173,7 @@ module.exports = {
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
     updateProfile: updateProfile,
+    primeUpgrade: primeUpgrade,
     tmpFunction: tmpFunction,
     testApi: testApi
 };
