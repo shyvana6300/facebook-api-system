@@ -27,11 +27,5 @@ module.exports = {
                 email: 'testvalidateaccountNG@gmail.com',
                 password: '123'
             }
-        },
-        accountExist: {
-            body: {
-                email: 'shyvana63001@gmail.com',
-                password: 'test12345'
-            }
         }
 }
