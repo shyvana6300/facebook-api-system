@@ -33,12 +33,12 @@ const validateRegister = async (req, res, next) => {
         // Check email exist
         const result = await accountServices.findAccountByEmail(req.body.email);
         if (result) {
-            return res.status(400).send("Email has already been used by another account!");
+            return res.status(400).send({ message: "Email has already been used by another account!" });
         }
         next();
     } catch (error) {
         return res.status(500).send({
-            message: "Error when checking email exist: " + error.message
+            message: "Server error!"
         })
     }
 };
@@ -63,7 +63,7 @@ const validateLogin = async (req, res, next) => {
         account.password
     );
     if (!checkPassword) {
-        return res.status(400).send('Invalid password!');
+        return res.status(400).send({ message: 'Invalid password!' });
     }
     next();
 }
@@ -93,7 +93,7 @@ const validateLoginToken = async (req, res, next) => {
         } else if (!isExpired) {
             return res.status(404).send({ message: "OTP expired! Please login again!" });
         }
-        
+
         next();
     } catch (error) {
         return res.status(500).send({
