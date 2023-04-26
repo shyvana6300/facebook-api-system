@@ -29,20 +29,25 @@ const validateAccount = (req, res, next) => {
  * @param {*} next 
  */
 const validateRegister = async (req, res, next) => {
-    try {
+    // try {
         // Check email exist
         const result = await accountServices.findAccountByEmail(req.body.email);
         if (result) {
-            return res.status(400).send({
-                message: "Email has already been used by another account!"
-            })
+            console.log('====== co result');
+            console.log(result);
+            return res.status(400).send("Email has already been used by another account!");
         }
+        console.log('====== k0 co result');
+        console.log(result);
+        console.log('before call next');
         next();
-    } catch (error) {
-        return res.status(500).send({
-            message: "Error when checking email exist: " + error.message
-        })
-    }
+        console.log('before call next');
+    // } catch (error) {
+    //     return res.status(500).send(
+    //         // message: "Error when checking email exist: " + error.message
+    //         "Error when checking email exist: "
+    //     )
+    // }
 };
 
 /**
