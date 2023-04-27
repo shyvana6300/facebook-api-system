@@ -12,15 +12,17 @@ const config = require("../config/authconfig");
  * @returns newAccount: new account have just created
  */
 const register = async (email, password) => {
+    const transaction = await baseModel.sequelize.transaction();
     try {
-        // TODO: transaction
         const newAccount = await Account.create({
             email: email,
             password: bcrypt.hashSync(password, 8),
             role: "user",
-        });
+        }, { trasaction: transaction });
+        await transaction.commit();
         return newAccount;
     } catch (error) {
+        await transaction.rollback();
         throw Error(error.message);
     }
 };
@@ -47,15 +49,18 @@ const generateOTP = async () => {
  * @returns result: update result
  */
 const resetPassword = async (email, newPassword) => {
+    const transaction = await baseModel.sequelize.transaction();
     try {
-        // TODO: transaction
         const result = await Account.update({ password: bcrypt.hashSync(newPassword, 8) }, {
             where: {
                 email: email
-            }
-        })
+            },
+            trasaction: transaction
+        });
+        await transaction.commit();
         return result;
     } catch (error) {
+        await transaction.rollback();
         throw Error(error.message);
     }
 };
@@ -91,9 +96,8 @@ const generateURLForgetPassword = async (email, protocol, host,) => {
 const updateProfile = async (req) => {
     console.log("---Called /service update Profile---");
     const email = req.email;
-    // Check account still exist
+    const transaction = await baseModel.sequelize.transaction();
     try {
-        // TODO: transaction
         console.log("---begin update Profile---");
         // Create onject data for updating
         const profileObject = await createProfileObject(
@@ -114,9 +118,16 @@ const updateProfile = async (req) => {
             job: profileObject.job,
             address: profileObject.address,
             gender: profileObject.gender
-        }, { where: { email: email } });
+        }, {
+            where: { 
+                email: email 
+            },
+            trasaction: transaction
+         });
+        await transaction.commit();
         return result;
     } catch (error) {
+        await transaction.rollback();
         throw Error(error.message);
     }
 };

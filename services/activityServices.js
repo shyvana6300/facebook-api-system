@@ -17,6 +17,7 @@ const Op = baseModel.Sequelize.Op;
  */
 const postStatus = async (accountId, statusImage, statusContent, protocol, host) => {
     console.log("---Called /service postStatus---");
+    const transaction = await baseModel.sequelize.transaction();
     // get account by email from request
     try {
         // create StatusObject with data from request
@@ -26,9 +27,11 @@ const postStatus = async (accountId, statusImage, statusContent, protocol, host)
             imageUrl: statusObject.imageUrl,
             content: statusObject.content,
             accountId: statusObject.accountId,
-        })
+        }, { trasaction: transaction });
+        await transaction.commit();
         return newStatus;
     } catch (error) {
+        await transaction.rollback();
         throw Error(error.message);
     }
 };
@@ -42,16 +45,18 @@ const postStatus = async (accountId, statusImage, statusContent, protocol, host)
  */
 const addComment = async (idStatus, idAccount, content) => {
     console.log("---Called /service addComment---");
+    const transaction = await baseModel.sequelize.transaction();
     try {
-        
         // create new comment to DB
         const comment = await Comment.create({
             content: content,
             idCommenter: idAccount,
             idStatus: idStatus
-        })
+        }, { trasaction: transaction });
+        await transaction.commit();
         return comment;
     } catch (error) {
+        await transaction.rollback();
         throw Error(error.message);
     }
 };
@@ -118,7 +123,7 @@ const addFriend = async (idFriend, idAccount) => {
         return "Create friendship successful!";
 
     } catch (error) {
-        transaction.rollback();
+        await transaction.rollback();
         throw Error(error.message);
     }
 };
@@ -131,6 +136,7 @@ const addFriend = async (idFriend, idAccount) => {
 const reactStatus = async (idStatus, idReactor) => {
     console.log('===Called reactStatus Service');
     const transaction = await baseModel.sequelize.transaction();
+    let result;
     try {
         const reactionObject = {
             idReactor: idReactor,
@@ -140,24 +146,27 @@ const reactStatus = async (idStatus, idReactor) => {
         const reaction = await Reaction.findOne({
             where: reactionObject
         });
-        // if reaction does not exist
+        // If reaction does not exist
         if (!reaction) {
-            // create new Reaction (like)
+            // Create new Reaction (like)
             const newReaction = Reaction.create(reactionObject, { trasaction: transaction });
-            // Commit transaction
-            await transaction.commit();
-            // Return the reaction created
-            return newReaction;
-            // else if reaction exist:
+
+            // Set the reaction created to result for returning
+            result = newReaction;
+            // Else if reaction exist
         } else {
-            // delete reaction (unlike)
+            // Delete reaction (unlike)
             Reaction.destroy({
                 where: reactionObject,
                 force: true
             }, { trasaction: transaction });
-            await transaction.commit();
-            return 'React unlike status successful!';
+            // Set message success to result
+            result = 'React unlike status successful!';
         }
+        // Commit transaction
+        await transaction.commit();
+        // Return result 
+        return result;
     } catch (error) {
         await transaction.rollback();
         throw Error(error.message);
@@ -287,7 +296,6 @@ const getReport = async (idAccount) => {
         ws.cell(2, 2).number(friendCount).style(style);
         ws.cell(2, 3).number(commentCount).style(style);
         ws.cell(2, 4).number(likeCount).style(style);
-
         // Xuất file và lưu vào public/report
         const date = new Date();
         wb.write(`public/report/Report_${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}.xlsx`);
@@ -295,7 +303,6 @@ const getReport = async (idAccount) => {
     } catch (error) {
         throw new Error(error.message);
     }
-
 }
 
 /**
@@ -309,7 +316,7 @@ const getStatusReport = async (accountId) => {
             accountId: accountId,
             [Op.and]: [
                 baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
-              ],
+            ],
         }
     });
     await console.log('====status number = ');
@@ -328,7 +335,7 @@ const getLikeReport = async (accountId) => {
             idReactor: accountId,
             [Op.and]: [
                 baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
-              ],
+            ],
         }
     });
     await console.log('====like number = ');
@@ -347,7 +354,7 @@ const getCommentReport = async (accountId) => {
             idCommenter: accountId,
             [Op.and]: [
                 baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
-              ],
+            ],
         }
     });
     await console.log('====Comment number = ');
@@ -366,7 +373,7 @@ const getFriendReport = async (accountId) => {
             accountId: accountId,
             [Op.and]: [
                 baseModel.Sequelize.literal(`createdAt  >= now() - interval 7 day`),
-              ],
+            ],
         }
     });
     await console.log('====Friend number = ');
