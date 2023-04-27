@@ -189,6 +189,20 @@ const getAccountById = async (accountId) => {
     }
 }
 
+/**
+ * Check if otp valid
+ * @param {*} otp 
+ * @returns 
+ */
+function checkExpiredOTP(otp) {
+    console.log('===checkexpired OTP: ' + otp);
+    if (!otp) return false
+    const currentTime = new Date().getTime();
+    const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
+    console.log("---khoang cach phut  = " + differentMinutes);
+    return differentMinutes > 1 ? false : true;
+}
+
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -202,4 +216,5 @@ module.exports = {
     updateProfile: updateProfile,
     findAccountByEmail: findAccountByEmail,
     getAccountById: getAccountById,
+    checkExpiredOTP: checkExpiredOTP
 }

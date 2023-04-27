@@ -79,7 +79,7 @@ const validateLoginToken = async (req, res, next) => {
     try {
         const otp = req.session.otp;
         const emailSession = req.session.email;
-        const isExpired = checkExpiredOTP(otp);
+        const isExpired = accountServices.checkExpiredOTP(otp);
         // get account by email from request
         let account = await accountServices.findAccountByEmail(req.body.email);
         // validate request body param { email, otp}
@@ -155,19 +155,7 @@ const validateLoginTokenSchema = async (req, res, next) => {
     next();
 }
 
-/**
- * Check if otp valid
- * @param {*} otp 
- * @returns 
- */
-function checkExpiredOTP(otp) {
-    console.log('===checkexpired OTP: ' + otp);
-    if (!otp) return false
-    const currentTime = new Date().getTime();
-    const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
-    console.log("---khoang cach phut  = " + differentMinutes);
-    return differentMinutes > 1 ? false : true;
-}
+
 
 
 module.exports = {
