@@ -8,12 +8,12 @@ const verifyTokenLogin = (req, res, next) => {
     // check if token exist
     /* #swagger.responses[401] = { description: 'Unauthorized or expired token' } */
     if(!token) {
-        return res.status(401).send('No token provided!')
+        return res.status(401).send('No token provided! Please login again.')
     }
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
         if (error) {
-            return res.status(401).send('Token Unauthorized or Expired!');
+            return res.status(401).send('Token Unauthorized or Expired! Please login again.');
         }
         console.log('===Token verified!! Pass!!');
         req.email = decoded.email;
@@ -26,8 +26,8 @@ const verifyTokenResetPwd = (req, res, next) => {
     // verify token
     jwt.verify(token, config.secret_key, (error, decoded) => {
         if (error) {
-            /* #swagger.responses[401] = { description: 'Unauthorized token' } */
-            return res.status(401).send('Token Reset Unauthorized!');
+            /* #swagger.responses[401] = { description: 'Token Unauthorize or Expired' } */
+            return res.status(401).send('Token Reset Unauthorized or Expired!');
         }
         console.log('===Token Reset verified!! Pass!!');
         req.email = decoded.email;

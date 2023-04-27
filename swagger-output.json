@@ -197,7 +197,10 @@
             "description": "Invalid input"
           },
           "401": {
-            "description": "Unauthorized token"
+            "description": "Token Unauthorize or Expired"
+          },
+          "404": {
+            "description": "Account Not Exist"
           },
           "500": {
             "description": "Internal Server Error"
@@ -233,6 +236,9 @@
           },
           "401": {
             "description": "Unauthorized or expired token"
+          },
+          "404": {
+            "description": "Account Not Exist"
           },
           "500": {
             "description": "Internal Server Error"
@@ -499,7 +505,7 @@
             "description": "Unauthorized or expired token"
           },
           "404": {
-            "description": "Not Found"
+            "description": "User Account Not Exist"
           },
           "500": {
             "description": "Internal Server Error"

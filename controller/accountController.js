@@ -1,6 +1,6 @@
 const accountServices = require("../services/accountServices");
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
     /* 	#swagger.tags = ['Account']
         #swagger.description = 'Sign up a specific account' */
 
@@ -60,8 +60,8 @@ const getTokenLogin = (req, res) => {
     } */
 
     console.log("---Called /loginToken---");
-    // Generate token - expired in 60 seconds
-    const token = accountServices.generateToken(req.body.email);
+    // Generate token - expired in 1 hour
+    const token = accountServices.generateToken(req.body.email, 3600);
     // Set token to session
     req.session.tokenLogin = token;
     /* #swagger.responses[200] = { description: 'Login successful' } */
@@ -91,13 +91,21 @@ const resetPassword = async (req, res) => {
     /* 	#swagger.tags = ['Account']
         #swagger.description = 'Create new password' */
     try {
+        /* #swagger.responses[404] = { description: 'Account Not Exist' } */
+        // Check account exist
+        const account = await accountServices.findAccountByEmail(req.email);
+        if (!account) {
+            return res.status(404).send({ message: 'Account not exist!' });
+        }
         // Update password for account with email send
         const result = await accountServices.resetPassword(
-            req.email,
+            account.email,
             req.body.newPassword
         )
         if (result == 1) {
             /* #swagger.responses[200] = { description: 'Create new password successful' } */
+            // delete login session if user is logged in
+            if (req.session.tokenLogin) delete req.session.tokenLogin;
             res.status(200).send('Your password has been updated!');
         }
     } catch (error) {
@@ -127,18 +135,26 @@ const updateProfile = async (req, res) => {
             in: 'formData',
             type: 'file',
             description: 'Select avatar image',
-        }
+    }
 
-        #swagger.parameters['obj'] = {
-            in: 'body',
-            description: 'Profile information.',
-            schema: { $ref: "#/definitions/updateProfile" }
-        } */
+    #swagger.parameters['obj'] = {
+        in: 'body',
+        description: 'Profile information.',
+        schema: { $ref: "#/definitions/updateProfile" }
+    } */
+
     console.log("---Called /updateProfile---");
     try {
-        const result = await accountServices.updateProfile(req);
+        /* #swagger.responses[404] = { description: 'Account Not Exist' } */
+        // Check account exist
+        const account = await accountServices.findAccountByEmail(req.email);
+        if (!account) {
+            return res.status(404).send({ message: 'Account not exist!' });
+        }
+        // Call service to update profile
+        await accountServices.updateProfile(req);
         /* #swagger.responses[200] = { description: 'Update profile successful' } */
-        res.status(200).send(result);
+        res.status(200).send('Your profile has been update!');
     } catch (error) {
         /* #swagger.responses[500] = { description: '' } */
         res.status(500).send({

@@ -13,6 +13,7 @@ const config = require("../config/authconfig");
  */
 const register = async (email, password) => {
     try {
+        // TODO: transaction
         const newAccount = await Account.create({
             email: email,
             password: bcrypt.hashSync(password, 8),
@@ -47,6 +48,7 @@ const generateOTP = async () => {
  */
 const resetPassword = async (email, newPassword) => {
     try {
+        // TODO: transaction
         const result = await Account.update({ password: bcrypt.hashSync(newPassword, 8) }, {
             where: {
                 email: email
@@ -63,9 +65,9 @@ const resetPassword = async (email, newPassword) => {
  * @param {*} email 
  * @returns token
  */
-const generateToken = (email) => {
+const generateToken = (email, expiredIn) => {
     console.log("---Called /generateTOken---");
-    return jwt.sign({ email: email }, config.secret_key, { expiresIn: 3600 })
+    return jwt.sign({ email: email }, config.secret_key, { expiresIn: expiredIn })
 };
 
 /**
@@ -74,8 +76,8 @@ const generateToken = (email) => {
  * @returns URL
  */
 const generateURLForgetPassword = async (email, protocol, host,) => {
-    // Create Token - expired in 60 seconds
-    const tokenForgotPass = await generateToken(email);
+    // Create Token - expired in 90 seconds
+    const tokenForgotPass = await generateToken(email, 90);
     // Create URL forget password
     const resetPassURL = `${protocol}://${host}/account/resetPassword/${tokenForgotPass}`;
     return resetPassURL;
@@ -91,37 +93,29 @@ const updateProfile = async (req) => {
     const email = req.email;
     // Check account still exist
     try {
-        const account = await findAccountByEmail(email);
-        if (!account) {
-            return {
-                error: true,
-                message: 'Account not exist!'
-            }
-        } else {
-            console.log("---brgin update Profile---");
-            const profileObject = await createProfileObject(
-                req.file,
-                req.body.fullName,
-                req.body.birthday,
-                req.body.job,
-                req.body.address,
-                req.body.gender,
-                req.protocol,
-                req.get('host')
-            );
-            console.log('====set object data done. profileObject= ' + JSON.stringify(profileObject));
-            const result = await Account.update({
-                avatarUrl: profileObject.avatarUrl,
-                fullName: profileObject.fullName,
-                birthday: profileObject.birthday,
-                job: profileObject.job,
-                address: profileObject.address,
-                gender: profileObject.gender
-            }, { where: { email: email } });
-            console.log('===update Done = ' + result);
-            console.log(result);
-            return result;
-        }
+        // TODO: transaction
+        console.log("---begin update Profile---");
+        // Create onject data for updating
+        const profileObject = await createProfileObject(
+            req.file,
+            req.body.fullName,
+            req.body.birthday,
+            req.body.job,
+            req.body.address,
+            req.body.gender,
+            req.protocol,
+            req.get('host')
+        );
+        // Update account profile
+        const result = await Account.update({
+            avatarUrl: profileObject.avatarUrl,
+            fullName: profileObject.fullName,
+            birthday: profileObject.birthday,
+            job: profileObject.job,
+            address: profileObject.address,
+            gender: profileObject.gender
+        }, { where: { email: email } });
+        return result;
     } catch (error) {
         throw Error(error.message);
     }
@@ -149,7 +143,7 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
     job && (profile.job = job);
     address && (profile.address = address);
     gender && (profile.gender = gender);
-    
+
     return profile;
 }
 /**
@@ -157,7 +151,6 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
  * @param {} email 
  * @returns account
  */
-// TODO: gộp hàm này với hàm getAccountIdIfExist, cho hàm getAccountId -> getAccount, trả về account
 const findAccountByEmail = async (email) => {
     const account = await Account.findOne({
         where: {
@@ -185,22 +178,6 @@ const getAccountById = async (accountId) => {
     }
 }
 
-/**
- * Get account id if account exist
- * @param {*} req 
- * @param {*} res 
- * @returns id: id account | res.status(404) if account not exist
- */
-const getAccountIdIfExist = async (req, res) => {
-    console.log("---Called /HHHHH---");
-    // Check if account exist
-    const account = await findAccountByEmail(req.email);
-    if (!account) {
-        return res.status(404).send({ message: 'Account not exist!'});
-    }
-    return account.id;
-};
-
 const tmpServiceFunction = (var1, var2) => {
     console.log("---Called /HHHHH---");
     return " ---tmpServiceFunction ---";
@@ -214,5 +191,4 @@ module.exports = {
     updateProfile: updateProfile,
     findAccountByEmail: findAccountByEmail,
     getAccountById: getAccountById,
-    getAccountIdIfExist: getAccountIdIfExist
 }
