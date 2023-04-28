@@ -3,6 +3,7 @@ const connectDB = require('../../../dbconnector');
 const accountServices = require('../../../services/accountServices');
 const bcrypt = require("bcryptjs");
 const mockReq = require('./mocks/validateRegister/request/mockReq');
+const schema = require('../../../schema/schema');
 jest.useFakeTimers();
 // test middleware
 const validateAccount = accountValidator.validateAccount;
@@ -25,9 +26,9 @@ describe("Test accountValidator", () => {
             });
         });
 
-        // xử lý mock function cho return res.status().send()
+        // Test case NG
         describe("Test caseNG", () => {
-            
+
             // Case 1: missing email from request body
             test("It should return error message email required", () => {
                 const mockedRes = require('./mocks/validateAccount/response/missingEmail');
@@ -105,12 +106,12 @@ describe("Test accountValidator", () => {
             const mockedRes = require('./mocks/validateRegister/response/existEmail');
             await validateRegister(mockReq, mockedRes, mockedNext);
             expect(mockedRes.status).toHaveBeenCalledWith(400);
-            expect(mockedRes.send).toHaveBeenCalledWith({message: "Email has already been used by another account!"});
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: "Email has already been used by another account!" });
         });
 
         // Test Case NG 500
         test("It should message that server error", async () => {
-            accountServices.findAccountByEmail = (3+2)/0;
+            accountServices.findAccountByEmail = (3 + 2) / 0;
             const mockedRes = require('./mocks/validateRegister/response/serverError');
             await validateRegister(mockReq, mockedRes, mockedNext);
             expect(mockedRes.status).toHaveBeenCalledWith(500);
@@ -230,7 +231,7 @@ describe("Test accountValidator", () => {
             expect(mockedRes.status).toHaveBeenCalledWith(400);
             expect(mockedRes.send).toHaveBeenCalledWith({ message: "OTP or email not match!" });
         });
-        
+
         // Case NG4: OTP expired
         test("It should return the message that otp or email not match", async () => {
             // Mock dependencies
@@ -250,33 +251,135 @@ describe("Test accountValidator", () => {
     describe("Test validateEmailForgot()", () => {
         // init mock dependencies
         const validateEmailForgot = accountValidator.validateEmailForgot;
-        const mockReq = require('./mocks/validateLoginToken/request/mockReq');
         const mockedNext = jest.fn();
+        const mockedReq = {
+            body: {
+                email: 'testemail@gmail.com'
+            }
+        };
         // Case OK
         test("It should call the next() function", async () => {
             // Mock dependencies
-            accountServices.findAccountByEmail = jest.fn((email) => 'sample result');
-            accountServices.checkExpiredOTP = jest.fn((otp) => true);
             const mockedRes = jest.fn();
-            const mockedReq = mockReq.normal;
+            schema.schemaEmailForgot.validate = jest.fn((requestBody) => 'mock result');
             // Call the test function
-            await validateLoginToken(mockedReq, mockedRes, mockedNext);
+            await validateEmailForgot(mockedReq, mockedRes, mockedNext);
             expect(mockedNext).toHaveBeenCalled();
         });
 
-        // Case NG1: account not exist
-        test("It should return the message that account not exist", async () => {
+        // Case NG: Result error
+        test("It should return the message error", async () => {
             // Mock dependencies
-            accountServices.findAccountByEmail = jest.fn((email) => null);
-            const mockedRes = require('./mocks/validateLoginToken/response/accountNotExist');
-            const mockedReq = mockReq.normal;
+            const mockedRes = require('./mocks/validateEmailForgot/response/mockRes');
+            
+            schema.schemaEmailForgot.validate = jest.fn();
+            schema.schemaEmailForgot.validate.mockReturnValueOnce({
+                error: {
+                    details: [
+                        { message: "error" }
+                    ]
+                }
+            });
             // Call the test function
-            await validateLoginToken(mockedReq, mockedRes, mockedNext);
-            // Expect value
-            expect(mockedRes.status).toHaveBeenCalledWith(404);
-            expect(mockedRes.send).toHaveBeenCalledWith({ message: "Account not exist!" });
+            await validateEmailForgot(mockedReq, mockedRes, mockedNext);
+            expect(mockedRes.status).toHaveBeenCalledWith(400);
+            expect(mockedRes.send).toHaveBeenCalledWith("error");
+        });
+    });
+
+    // Test validateNewPassword()
+    describe("Test validateNewPassword()", () => {
+        const validateNewPassword = accountValidator.validateNewPassword
+        const mockedNext = jest.fn();
+        const mockReq = require('./mocks/validateNewPassword/request/mockReq');
+        describe("Test caseOK", () => {
+            test("It should call the next() function", () => {
+                const mockedRes = jest.fn();
+                schema.schemaNewPassword.validate = jest.fn((requestBody) => 'mock result');
+                const mockedReq = mockReq.normal;
+                validateNewPassword(mockedReq, mockedRes, mockedNext);
+                expect(mockedNext).toHaveBeenCalled();
+            });
         });
 
-        
+        // test case NG
+        describe("Test caseNG", () => {
+            // Case 1: error validate
+            test("It should return error message", () => {
+                const mockedRes = require('./mocks/validateNewPassword/response/validateError');
+                const mockedReq = mockReq.normal;
+                schema.schemaNewPassword.validate = jest.fn((requestBody) => 'mock result');
+                schema.schemaNewPassword.validate = jest.fn();
+                schema.schemaNewPassword.validate.mockReturnValueOnce({
+                error: {
+                    details: [
+                        { message: "error" }
+                    ]
+                }
+                });
+                validateNewPassword(mockedReq, mockedRes, mockedNext);
+                expect(mockedRes.status).toHaveBeenCalledWith(400);
+                expect(mockedRes.send).toHaveBeenCalledWith(`error`);
+            });
+
+            // Case 2: password confirm not match
+            test("It should return error message", () => {
+                const mockedRes = require('./mocks/validateNewPassword/response/passwordNotMatch');
+                const mockedReq = mockReq.notMatch;
+                schema.schemaNewPassword.validate = jest.fn();
+                schema.schemaNewPassword.validate.mockReturnValueOnce({
+                error: {
+                    details: [
+                        { message: "Password confirm not match!" }
+                    ]
+                }
+                });
+                validateNewPassword(mockedReq, mockedRes, mockedNext);
+                expect(mockedRes.status).toHaveBeenCalledWith(400);
+                expect(mockedRes.send).toHaveBeenCalledWith(`Password confirm not match!`);
+            });
+
+        });
+    });
+
+    // Test validateLoginTokenSchema()
+    describe("Test validateLoginTokenSchema()", () => {
+        // init mock dependencies
+        const validateLoginTokenSchema = accountValidator.validateLoginTokenSchema;
+        const mockedNext = jest.fn();
+        const mockedReq = {
+            body: {
+                email: 'testemail@gmail.com',
+                otp: 'newOTP'
+            }
+        };
+        // Case OK
+        test("It should call the next() function", async () => {
+            // Mock dependencies
+            const mockedRes = jest.fn();
+            schema.schemaLoginToken.validate = jest.fn((requestBody) => 'mock result');
+            // Call the test function
+            validateLoginTokenSchema(mockedReq, mockedRes, mockedNext);
+            expect(mockedNext).toHaveBeenCalled();
+        });
+
+        // Case NG: Result error
+        test("It should return the message error", async () => {
+            // Mock dependencies
+            const mockedRes = require('./mocks/validateLoginTokenSchema/response/mockRes');
+            
+            schema.schemaLoginToken.validate = jest.fn();
+            schema.schemaLoginToken.validate.mockReturnValueOnce({
+                error: {
+                    details: [
+                        { message: "error" }
+                    ]
+                }
+            });
+            // Call the test function
+            validateLoginTokenSchema(mockedReq, mockedRes, mockedNext);
+            expect(mockedRes.status).toHaveBeenCalledWith(400);
+            expect(mockedRes.send).toHaveBeenCalledWith("error");
+        });
     });
 })

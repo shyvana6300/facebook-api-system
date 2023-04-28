@@ -112,6 +112,7 @@ const validateLoginToken = async (req, res, next) => {
 const validateEmailForgot = async (req, res, next) => {
     const schemaEmailForgot = schema.schemaEmailForgot;
     const result = schemaEmailForgot.validate(req.body);
+    console.log(result);
     if (result.error) {
         /* #swagger.responses[400] = { description: 'Invalid email' } */
         return res.status(400).send(result.error.details[0].message);
@@ -126,7 +127,7 @@ const validateEmailForgot = async (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-const validateNewPassword = async (req, res, next) => {
+const validateNewPassword = (req, res, next) => {
     const schemaNewPassword = schema.schemaNewPassword;
     const result = schemaNewPassword.validate(req.body);
     /* #swagger.responses[400] = { description: 'Invalid input' } */
@@ -145,7 +146,7 @@ const validateNewPassword = async (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-const validateLoginTokenSchema = async (req, res, next) => {
+const validateLoginTokenSchema = (req, res, next) => {
     const schemaLoginToken = schema.schemaLoginToken;
     const result = schemaLoginToken.validate(req.body);
     if (result.error) {

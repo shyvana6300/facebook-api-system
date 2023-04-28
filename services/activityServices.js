@@ -338,8 +338,6 @@ const getLikeReport = async (accountId) => {
             ],
         }
     });
-    await console.log('====like number = ');
-    await console.log(numberLike);
     return numberLike;
 }
 
@@ -357,8 +355,6 @@ const getCommentReport = async (accountId) => {
             ],
         }
     });
-    await console.log('====Comment number = ');
-    await console.log(numberComment);
     return numberComment;
 }
 
@@ -376,8 +372,6 @@ const getFriendReport = async (accountId) => {
             ],
         }
     });
-    await console.log('====Friend number = ');
-    await console.log(numberFriend);
     return numberFriend;
 }
 module.exports = {

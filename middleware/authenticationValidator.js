@@ -15,7 +15,6 @@ const verifyTokenLogin = (req, res, next) => {
         if (error) {
             return res.status(401).send('Token Unauthorized or Expired! Please login again.');
         }
-        console.log('===Token verified!! Pass!!');
         req.email = decoded.email;
         next();
     })
@@ -29,9 +28,7 @@ const verifyTokenResetPwd = (req, res, next) => {
             /* #swagger.responses[401] = { description: 'Token Unauthorize or Expired' } */
             return res.status(401).send('Token Reset Unauthorized or Expired!');
         }
-        console.log('===Token Reset verified!! Pass!!');
         req.email = decoded.email;
-        console.log('===Request.email = '+req.email);
         next();
     })
 }
