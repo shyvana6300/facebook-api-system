@@ -271,7 +271,7 @@ describe("Test accountValidator", () => {
         test("It should return the message error", async () => {
             // Mock dependencies
             const mockedRes = require('./mocks/validateEmailForgot/response/mockRes');
-            
+
             schema.schemaEmailForgot.validate = jest.fn();
             schema.schemaEmailForgot.validate.mockReturnValueOnce({
                 error: {
@@ -311,11 +311,11 @@ describe("Test accountValidator", () => {
                 schema.schemaNewPassword.validate = jest.fn((requestBody) => 'mock result');
                 schema.schemaNewPassword.validate = jest.fn();
                 schema.schemaNewPassword.validate.mockReturnValueOnce({
-                error: {
-                    details: [
-                        { message: "error" }
-                    ]
-                }
+                    error: {
+                        details: [
+                            { message: "error" }
+                        ]
+                    }
                 });
                 validateNewPassword(mockedReq, mockedRes, mockedNext);
                 expect(mockedRes.status).toHaveBeenCalledWith(400);
@@ -328,11 +328,11 @@ describe("Test accountValidator", () => {
                 const mockedReq = mockReq.notMatch;
                 schema.schemaNewPassword.validate = jest.fn();
                 schema.schemaNewPassword.validate.mockReturnValueOnce({
-                error: {
-                    details: [
-                        { message: "Password confirm not match!" }
-                    ]
-                }
+                    error: {
+                        details: [
+                            { message: "Password confirm not match!" }
+                        ]
+                    }
                 });
                 validateNewPassword(mockedReq, mockedRes, mockedNext);
                 expect(mockedRes.status).toHaveBeenCalledWith(400);
@@ -367,7 +367,7 @@ describe("Test accountValidator", () => {
         test("It should return the message error", async () => {
             // Mock dependencies
             const mockedRes = require('./mocks/validateLoginTokenSchema/response/mockRes');
-            
+
             schema.schemaLoginToken.validate = jest.fn();
             schema.schemaLoginToken.validate.mockReturnValueOnce({
                 error: {

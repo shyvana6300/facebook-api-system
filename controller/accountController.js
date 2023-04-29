@@ -17,9 +17,7 @@ const register = async (req, res) => {
         } */
         res.status(201).send(newAccount);
     } catch (error) {
-        res.status(500).send({
-            message: error.message || "Unexpected error occurred when creating new account."
-        });
+        res.status(500).send("Unexpected error occurred when creating new account.");
     }
 };
 
@@ -36,6 +34,8 @@ const loginOTP = async (req, res) => {
     } */
 
     const otp = await accountServices.generateOTP();
+    console.log('=====');
+    console.log(JSON.stringify(otp));
     req.session.otp = otp;
     req.session.email = req.body.email;
     /* #swagger.responses[200] = { description: 'Email and password is valid - Return OTP' } */
@@ -115,13 +115,6 @@ const resetPassword = async (req, res) => {
     };
 };
 
-const testGetToken = (req, res) => {
-    /* 	#swagger.tags = ['Testing']
-        #swagger.description = 'Test API with login required' */
-    console.log("---Called /TestgetToken---");
-    res.send(" ---getToken ---");
-};
-
 /**
  * Update account profile
  * @param {*} req 
@@ -154,12 +147,11 @@ const updateProfile = async (req, res) => {
         // Call service to update profile
         await accountServices.updateProfile(req);
         /* #swagger.responses[200] = { description: 'Update profile successful' } */
-        res.status(200).send('Your profile has been update!');
+        res.status(200).send('Your profile has been updated!');
     } catch (error) {
         /* #swagger.responses[500] = { description: '' } */
         res.status(500).send({
             message: "Error when update profile for account " + req.email,
-            error: error
         });
     };
 };
@@ -167,6 +159,13 @@ const updateProfile = async (req, res) => {
 const primeUpgrade = (req, res) => {
     console.log("---Called /primeUpgrade---");
     res.send(" ---primeUpgrade ---");
+};
+
+const testGetToken = (req, res) => {
+    /* 	#swagger.tags = ['Testing']
+        #swagger.description = 'Test API with login required' */
+    console.log("---Called /TestgetToken---");
+    res.send(" ---getToken ---");
 };
 
 const tmpFunction = (req, res) => {
@@ -184,12 +183,12 @@ const testApi = (req, res) => {
 module.exports = {
     register: register,
     loginOTP: loginOTP,
-    testGetToken: testGetToken,
     getTokenLogin: getTokenLogin,
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
     updateProfile: updateProfile,
     primeUpgrade: primeUpgrade,
     tmpFunction: tmpFunction,
-    testApi: testApi
+    testApi: testApi,
+    testGetToken: testGetToken,
 };
