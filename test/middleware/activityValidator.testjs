@@ -1,8 +1,5 @@
-const activityValidator = require('../../../middleware/activityValidator');
-const connectDB = require('../../../dbconnector');
-const accountServices = require('../../../services/accountServices');
-const bcrypt = require("bcryptjs");
-const schema = require('../../../schema/schema');
+const activityValidator = require('../../middleware/activityValidator');
+const schema = require('../../schema/schema');
 jest.useFakeTimers();
 
 describe("Test activityValidator", () => {

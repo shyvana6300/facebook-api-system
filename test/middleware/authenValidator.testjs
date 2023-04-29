@@ -1,0 +1,30 @@
+const { decode } = require('jsonwebtoken');
+const authenValidator = require('../../middleware/authenValidator');
+const schema = require('../../schema/schema');
+const jwt = require('jsonwebtoken');
+jest.useFakeTimers();
+
+describe("Test authenValidator", () => {
+    describe("test verifyTokenLogin()", () => {
+        const verifyTokenLogin = authenValidator.verifyTokenLogin;
+        const mockedNext = jest.fn();
+        describe("Test case OK", () => {
+            test("It should call the next function()", () => {
+                const mockedReq = {
+                    session: {
+                        tokenLogin: 'mock token'
+                    }
+                }
+                const mockedRes = jest.fn();
+                const mockKey = 'mock key';
+                mockCallback = jest.fn((error, decoded) => {
+                    error = null;
+                    decoded = 'mock email';
+                })
+                jwt.verify = jest.fn(mockedReq.session.tokenLogin, mockKey, mockCallback);
+                verifyTokenLogin(mockedReq, mockedRes, mockedNext);
+                expect(mockedNext).toHaveBeenCalled();
+            })
+        })
+    }) 
+})
