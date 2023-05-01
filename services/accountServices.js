@@ -145,7 +145,6 @@ const updateProfile = async (req) => {
  * @returns 
  */
 const createProfileObject = (file, fullName, birthday, job, address, gender, protocol, host) => {
-    console.log('====begin set profile obj = ');
     const profile = {}
     //Generate and set avatar url if user send a image avatar
     file && (profile.avatarUrl = `${protocol}://${host}/avatar/${file.originalname}`);
@@ -154,7 +153,6 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
     job && (profile.job = job);
     address && (profile.address = address);
     gender && (profile.gender = gender);
-
     return profile;
 }
 /**
@@ -217,5 +215,6 @@ module.exports = {
     updateProfile: updateProfile,
     findAccountByEmail: findAccountByEmail,
     getAccountById: getAccountById,
-    checkExpiredOTP: checkExpiredOTP
+    checkExpiredOTP: checkExpiredOTP,
+    createProfileObject: createProfileObject
 }

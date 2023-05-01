@@ -73,9 +73,7 @@ describe('Test getAccountById()', () => {
                 await getAccountById(mockAccountId)
             }).rejects.toThrowError();
         });        
-    });
-
-    
+    }); 
 });
 
 describe('Test findAccountByEmail()', () => {
@@ -91,6 +89,7 @@ describe('Test findAccountByEmail()', () => {
             expect(result).toBe('mockAccount');
         })
     });
+
     describe('Test case error: server Error ', () => {
         const findAccountByEmail = accountServices.findAccountByEmail;
         test('It should return error message', async () => {
@@ -103,6 +102,29 @@ describe('Test findAccountByEmail()', () => {
             }).rejects.toThrowError();
         });        
     });
-
-
 });
+
+describe("Test createProfileObject()", () => {
+    test('It should return object profile', () => {
+        const createProfileObject = accountServices.createProfileObject;
+        const mockfile = {
+            originalname: 'mockFileName'
+        } 
+        const mockFullName = 'mockFullName'; 
+        const mockBirthday = "1996-10-16"; 
+        const mockJob = 'mockJob'; 
+        const mockAddress = 'mockAddress'; 
+        const mockGender = 'mockGender'; 
+        const mockProtocol = 'mockProtocol';
+        const mockHost = 'mockHost';
+        const result = createProfileObject(mockfile, mockFullName, mockBirthday, mockJob, mockAddress, mockGender, mockProtocol, mockHost);
+        expect(result).toStrictEqual({
+            avatarUrl: `mockProtocol://mockHost/avatar/mockFileName`,
+            fullName: 'mockFullName',
+            birthday: new Date("1996-10-16"),
+            job: 'mockJob',
+            address: 'mockAddress',
+            gender: 'mockGender'
+        })
+    })
+})
