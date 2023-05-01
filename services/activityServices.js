@@ -180,7 +180,6 @@ const reactStatus = async (idStatus, idReactor) => {
  * @returns 
  */
 const getTimeline = async (accountId, limitParam, offsetParam) => {
-    console.log('===Called getTimeline Service');
     try {
         const offset = offsetParam ? offsetParam : null;
         const limit = limitParam ? limitParam : null;
@@ -299,7 +298,7 @@ const getReport = async (idAccount) => {
         // Xuất file và lưu vào public/report
         const date = new Date();
         wb.write(`public/report/Report_${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}.xlsx`);
-        return "Create report success!";
+        return "Create report successful!";
     } catch (error) {
         throw new Error(error.message);
     }

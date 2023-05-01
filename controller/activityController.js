@@ -155,13 +155,10 @@ const getTimeline = async (req, res) => {
         }
         // call service to get timeline
         const result = await activityServices.getTimeline(account.id, req.query.limit, req.query.offset);
-        if (result.error) {
-            return res.status(404).send(result.message);
-        }
         /* #swagger.responses[200] = { description: 'Get timeline successful' } */
         res.status(200).send(result);
     } catch (error) {
-        res.status(500).send("Unexpected error occurred when react status.");
+        res.status(500).send("Unexpected error occurred when getting timeline.");
     }
 }
 
@@ -174,7 +171,6 @@ const getReport = async (req, res) => {
     /* 	#swagger.tags = ['Activity']
     #swagger.description = 'Get report of account activity pass a week' */
     try {
-        console.log("---Called /getReport---");
         /* #swagger.responses[404] = { description: 'User Account Does Not Exist' } */
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
@@ -183,11 +179,8 @@ const getReport = async (req, res) => {
         }
         // Call service to get report
         const result = await activityServices.getReport(account.id);
-        if (result.error) {
-            return res.status(404).send(result.message);
-        }
         /* #swagger.responses[201] = { description: 'Create report successful' } */
-        res.status(201).send("Create report successful!");
+        res.status(201).send(result);
     } catch (error) {
         res.status(500).send("Unexpected error occurred when create report.");
     }
