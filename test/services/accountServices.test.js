@@ -1,10 +1,10 @@
-const accountServices = require("../../../services/accountServices");
-const baseModel = require("../../../models/baseModel");
+const accountServices = require("../../services/accountServices");
+const baseModel = require("../../models/baseModel");
 const Account = baseModel.accountModel;
-const otpGenerator = require('../../../utils/otpGenerator');
+const otpGenerator = require('../../utils/otpGenerator');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const config = require("../../../config/authconfig");
+const config = require("../../config/authconfig");
 
 describe('Test checkExpiredOTP()', () => {
     const checkExpiredOTP = accountServices.checkExpiredOTP;
