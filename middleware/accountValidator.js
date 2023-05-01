@@ -79,7 +79,7 @@ const validateLoginToken = async (req, res, next) => {
     try {
         const otp = req.session.otp;
         const emailSession = req.session.email;
-        const isExpired = accountServices.checkExpiredOTP(otp);
+        const checkExpired = accountServices.checkExpiredOTP(otp);
         // get account by email from request
         let account = await accountServices.findAccountByEmail(req.body.email);
         // validate request body param { email, otp}
@@ -90,7 +90,7 @@ const validateLoginToken = async (req, res, next) => {
             return res.status(404).send({ message: "OTP not exist!" });
         } else if (req.session.otp.value !== req.body.otp || emailSession !== req.body.email) {
             return res.status(400).send({ message: "OTP or email not match!" });
-        } else if (!isExpired) {
+        } else if (!checkExpired) {
             return res.status(404).send({ message: "OTP expired! Please login again!" });
         }
 

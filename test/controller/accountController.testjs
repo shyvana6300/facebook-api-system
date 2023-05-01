@@ -1,4 +1,3 @@
-const { expectCt } = require('helmet');
 const accountController = require('../../controller/accountController');
 const accountServices = require("../../services/accountServices");
 
@@ -16,7 +15,7 @@ describe('Test register', () => {
             const mockedRes = {};
             mockedRes.status = jest.fn().mockReturnValue(mockedRes);
             mockedRes.send = jest.fn().mockReturnValue(mockedRes);
-            accountServices.register = jest.fn((email, password) => 'mock new account');
+            accountServices.register = jest.fn(() => 'mock new account');
             // Call test function
             await register(mockedReq, mockedRes);
             expect(mockedRes.status).toHaveBeenCalledWith(201);

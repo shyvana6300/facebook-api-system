@@ -1,18 +1,13 @@
 const accountValidator = require('../../../middleware/accountValidator');
-const connectDB = require('../../../dbconnector');
 const accountServices = require('../../../services/accountServices');
 const bcrypt = require("bcryptjs");
-const mockReq = require('./mocks/validateRegister/request/mockReq');
 const schema = require('../../../schema/schema');
 jest.useFakeTimers();
 // test middleware
 const validateAccount = accountValidator.validateAccount;
 
 describe("Test accountValidator", () => {
-    beforeAll(() => {
-        connectDB();
-    });
-    // TODO: mock schema validate -> sua lai test validate Account
+
     // Test validateAccount()
     describe("Test validateAccount()", () => {
         const mockReqNG = require('./mocks/validateAccount/request/mockReqNG');

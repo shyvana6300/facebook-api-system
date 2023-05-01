@@ -163,12 +163,16 @@ const createProfileObject = (file, fullName, birthday, job, address, gender, pro
  * @returns account
  */
 const findAccountByEmail = async (email) => {
-    const account = await Account.findOne({
-        where: {
-            email: email,
-        }
-    });
-    return account;
+    try{
+        const account = await Account.findOne({
+            where: {
+                email: email,
+            }
+        });
+        return account;
+    } catch (error) {
+        throw Error(error.message);
+    }
 };
 
 /**
@@ -196,8 +200,9 @@ const getAccountById = async (accountId) => {
  */
 function checkExpiredOTP(otp) {
     console.log('===checkexpired OTP: ' + otp);
-    if (!otp) return false
+    if (!otp) return false;
     const currentTime = new Date().getTime();
+    console.log('====current time = '+currentTime);
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
     console.log("---khoang cach phut  = " + differentMinutes);
     return differentMinutes > 1 ? false : true;

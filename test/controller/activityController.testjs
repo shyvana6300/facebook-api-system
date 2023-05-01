@@ -1,7 +1,6 @@
 const activityServices = require("../../services/activityServices");
 const accountServices = require("../../services/accountServices");
 const activityController = require('../../controller/activityController');
-const connectDB = require('../../dbconnector');
 
 describe("Test postStatus()", () => {
     // Mock init
@@ -17,9 +16,6 @@ describe("Test postStatus()", () => {
     }
     const postStatus = activityController.postStatus;
     describe("Test case OK", () => {
-        beforeAll(() => {
-            connectDB();
-        });
         test('It should return the result', async () => {
             // Mock dependencies
             accountServices.findAccountByEmail = jest.fn(() => 'mock Account');
