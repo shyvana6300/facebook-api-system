@@ -24,16 +24,14 @@ const postStatus = async (req, res) => {
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // call service to post new status
         const result = await activityServices.postStatus(account.id, req.file, req.body.content, req.protocol, req.get("host"));
         /* #swagger.responses[201] = { description: 'Created New Status' } */
         res.status(201).send(result);
     } catch (error) {
-        res.status(500).send({
-            message: error.message || "Unexpected error occurred when creating new status."
-        });
+        res.status(500).send("Unexpected error occurred when creating new status.");
     }
 };
 
@@ -51,7 +49,7 @@ const addComment = async (req, res) => {
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // Check if status exist
         const status = await activityServices.getStatusById(req.body.idStatus);
@@ -63,9 +61,7 @@ const addComment = async (req, res) => {
         /* #swagger.responses[201] = { description: 'Created new comment' } */
         return res.status(201).send(result);
     } catch (error) {
-        res.status(500).send({
-            message: error.message || "Unexpected error occurred when adding new comment."
-        });
+        res.status(500).send("Unexpected error occurred when adding new comment.");
     }
 };
 
@@ -83,7 +79,7 @@ const reactStatus = async (req, res) => {
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // Check if status exist
         const status = await activityServices.getStatusById(req.body.idStatus);
@@ -113,19 +109,19 @@ const addFriend = async (req, res) => {
         // Call service to validate request
         let result = await activityServices.validateAddingFriend(req);
         if (result.error) {
-            return res.status(404).send(result.message);
+            return res.status(400).send(result.message);
         } else {
             /* #swagger.responses[404] = { description: 'User Account or Friend Account Not Found' } */
             // Check account exist
             const account = await accountServices.findAccountByEmail(req.email);
             if (!account) {
-                return res.status(404).send({ message: 'Account not exist!' });
+                return res.status(404).send({ message: 'Account does not exist!' });
             }
             const idFriend = req.body.idFriend;
             // Validate friend account
             const friendAccount = await accountServices.getAccountById(idFriend);
             if (!friendAccount) {
-                return res.status(404).send('Friend account is no longer exist!');
+                return res.status(404).send('Friend account does not exist!');
             } else if (idFriend == account.id) {
                 return res.status(400).send('Cannot add friend with yourself!');
             } else if (await activityServices.isFriendShipExist(idFriend, account.id)) {
@@ -136,10 +132,7 @@ const addFriend = async (req, res) => {
                 /* #swagger.responses[201] = { description: 'Add friend successful' } */
                 res.status(201).send(result);
             }
-
-
         }
-
     } catch (error) {
         res.status(500).send("Unexpected error occurred while adding friend.");
     }
@@ -158,7 +151,7 @@ const getTimeline = async (req, res) => {
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // call service to get timeline
         const result = await activityServices.getTimeline(account.id, req.query.limit, req.query.offset);
@@ -182,11 +175,11 @@ const getReport = async (req, res) => {
     #swagger.description = 'Get report of account activity pass a week' */
     try {
         console.log("---Called /getReport---");
-        /* #swagger.responses[404] = { description: 'User Account Not Exist' } */
+        /* #swagger.responses[404] = { description: 'User Account Does Not Exist' } */
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // Call service to get report
         const result = await activityServices.getReport(account.id);

@@ -203,10 +203,6 @@ function checkExpiredOTP(otp) {
     return differentMinutes > 1 ? false : true;
 }
 
-const tmpServiceFunction = (var1, var2) => {
-    console.log("---Called /HHHHH---");
-    return " ---tmpServiceFunction ---";
-};
 module.exports = {
     register: register,
     generateOTP: generateOTP,

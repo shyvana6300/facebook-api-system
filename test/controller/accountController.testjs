@@ -132,7 +132,7 @@ describe('Test resetPassword', () => {
     });
     // Test case NG 404
     describe('Test case NG: 404', () => {
-        test('It should return message account not exist', async () => {
+        test('It should return message account does not exist', async () => {
             // Mock dependencies
             const mockedRes = {};
             mockedRes.status = jest.fn().mockReturnValue(mockedRes);
@@ -142,7 +142,7 @@ describe('Test resetPassword', () => {
             await resetPassword(mockedReq, mockedRes);
             // Expect value
             expect(mockedRes.status).toHaveBeenCalledWith(404);
-            expect(mockedRes.send).toHaveBeenCalledWith({ message: 'Account not exist!' });
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: 'Account does not exist!' });
         })
     });
 
@@ -189,7 +189,7 @@ describe('Test updateProfile', () => {
     });
     // Test case NG 404
     describe('Test case NG: 404', () => {
-        test('It should return message account not exist', async () => {
+        test('It should return message account does not exist', async () => {
             // Mock dependencies
             const mockedRes = {};
             mockedRes.status = jest.fn().mockReturnValue(mockedRes);
@@ -199,7 +199,7 @@ describe('Test updateProfile', () => {
             await updateProfile(mockedReq, mockedRes);
             // Expect value
             expect(mockedRes.status).toHaveBeenCalledWith(404);
-            expect(mockedRes.send).toHaveBeenCalledWith({ message: 'Account not exist!' });
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: 'Account does not exist!' });
         })
     });
 

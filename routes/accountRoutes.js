@@ -2,7 +2,7 @@ const express = require('express');
 const fileUploader = require('../middleware/fileUploader');
 const accountController = require('../controller/accountController');
 const accountValidator = require('../middleware/accountValidator');
-const authValidator = require('../middleware/authenticationValidator');
+const authValidator = require('../middleware/authenValidator');
 const account_router = express.Router();
 
 account_router.post('/register', [accountValidator.validateAccount ,accountValidator.validateRegister], accountController.register);

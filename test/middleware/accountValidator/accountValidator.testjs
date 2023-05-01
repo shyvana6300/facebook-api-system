@@ -180,8 +180,8 @@ describe("Test accountValidator", () => {
             expect(mockedNext).toHaveBeenCalled();
         });
 
-        // Case NG1: account not exist
-        test("It should return the message that account not exist", async () => {
+        // Case NG1: account does not exist
+        test("It should return the message that account does not exist", async () => {
             // Mock dependencies
             accountServices.findAccountByEmail = jest.fn((email) => null);
             const mockedRes = require('./mocks/validateLoginToken/response/accountNotExist');
@@ -190,7 +190,7 @@ describe("Test accountValidator", () => {
             await validateLoginToken(mockedReq, mockedRes, mockedNext);
             // Expect value
             expect(mockedRes.status).toHaveBeenCalledWith(404);
-            expect(mockedRes.send).toHaveBeenCalledWith({ message: "Account not exist!" });
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: "Account does not exist!" });
         });
 
         // Case NG2: OTP not exist

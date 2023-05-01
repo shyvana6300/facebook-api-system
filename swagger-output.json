@@ -200,7 +200,7 @@
             "description": "Token Unauthorize or Expired"
           },
           "404": {
-            "description": "Account Not Exist"
+            "description": "Account Does Not Exist"
           },
           "500": {
             "description": "Internal Server Error"
@@ -238,7 +238,7 @@
             "description": "Unauthorized or expired token"
           },
           "404": {
-            "description": "Account Not Exist"
+            "description": "Account Does Not Exist"
           },
           "500": {
             "description": "Internal Server Error"
@@ -505,7 +505,7 @@
             "description": "Unauthorized or expired token"
           },
           "404": {
-            "description": "User Account Not Exist"
+            "description": "User Account Does Not Exist"
           },
           "500": {
             "description": "Internal Server Error"

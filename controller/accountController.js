@@ -91,11 +91,11 @@ const resetPassword = async (req, res) => {
     /* 	#swagger.tags = ['Account']
         #swagger.description = 'Create new password' */
     try {
-        /* #swagger.responses[404] = { description: 'Account Not Exist' } */
+        /* #swagger.responses[404] = { description: 'Account Does Not Exist' } */
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // Update password for account with email send
         const result = await accountServices.resetPassword(
@@ -138,11 +138,11 @@ const updateProfile = async (req, res) => {
 
     console.log("---Called /updateProfile---");
     try {
-        /* #swagger.responses[404] = { description: 'Account Not Exist' } */
+        /* #swagger.responses[404] = { description: 'Account Does Not Exist' } */
         // Check account exist
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
-            return res.status(404).send({ message: 'Account not exist!' });
+            return res.status(404).send({ message: 'Account does not exist!' });
         }
         // Call service to update profile
         await accountServices.updateProfile(req);

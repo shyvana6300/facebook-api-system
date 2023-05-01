@@ -85,7 +85,7 @@ const validateLoginToken = async (req, res, next) => {
         // validate request body param { email, otp}
         /* #swagger.responses[404] = { description: 'OTP or account not found || OTP expired' } */
         if (!account) {
-            return res.status(404).send({ message: "Account not exist!" });
+            return res.status(404).send({ message: "Account does not exist!" });
         } else if (!req.session.otp) {
             return res.status(404).send({ message: "OTP not exist!" });
         } else if (req.session.otp.value !== req.body.otp || emailSession !== req.body.email) {

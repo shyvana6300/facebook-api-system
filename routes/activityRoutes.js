@@ -2,7 +2,7 @@ const express = require('express');
 const fileUploader = require('../middleware/fileUploader');
 const activityController = require('../controller/activityController');
 const activityValidator = require('../middleware/activityValidator');
-const authValidator = require('../middleware/authenticationValidator');
+const authValidator = require('../middleware/authenValidator');
 const activity_router = express.Router();
 
 activity_router.post('/postStatus',
