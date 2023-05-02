@@ -272,4 +272,44 @@ describe("Test generateOTP()", () => {
     })
 });
 
+describe("Test register()", () => {
+    const register = accountServices.register;
+    describe("Test case OK", () => {
+        test("It should return mockNewAccount", async () => {
+            // Mock dependencies
+            const mockEmail = 'mockEmail@gmail.com';
+            const mockPassword = 'mockPassword';
+            bcrypt.hashSync = jest.fn(() => 'mockEncryptedPassword');
+            Account.create = jest.fn(() => 'mockNewAccount');
+            baseModel.sequelize.transaction = jest.fn();
+            baseModel.sequelize.transaction.mockReturnValue({
+                commit: jest.fn(() => {}),
+                rollback: jest.fn(() => {}) 
+            });
+            // Call test function and expect value
+            const result = await register(mockEmail, mockPassword);
+            expect(result).toBe('mockNewAccount');      
+        });
+    });
+
+    describe("Test case NG", () => {
+        test("It should throw Error", async () => {
+            // Mock dependencies
+            const mockEmail = 'mockEmail@gmail.com';
+            const mockPassword = 'mockPassword';
+            bcrypt.hashSync = jest.fn(() => 'mockEncryptedPassword');
+            Account.create = (3/0);
+            baseModel.sequelize.transaction = jest.fn();
+            baseModel.sequelize.transaction.mockReturnValue({
+                commit: jest.fn(() => {}),
+                rollback: jest.fn(() => {}) 
+            });
+            // Call test function and expect value
+            expect(async () => {
+                await register(mockEmail, mockPassword);
+            }).rejects.toThrowError();
+        });
+    });
+})
+
 
