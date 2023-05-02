@@ -4,7 +4,6 @@ const Reaction = baseModel.reactionModel;
 const Comment = baseModel.commentModel;
 const FriendShip = baseModel.friendshipModel;
 const Status = baseModel.statusModel;
-const accountServices = require("./accountServices");
 const schema = require('../schema/schema');
 const { number } = require("joi");
 const Op = baseModel.Sequelize.Op;

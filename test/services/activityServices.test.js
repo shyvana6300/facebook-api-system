@@ -1,0 +1,9 @@
+const baseModel = require("../models/baseModel");
+const QueryTypes = baseModel.sequelize.QueryTypes;
+const Reaction = baseModel.reactionModel;
+const Comment = baseModel.commentModel;
+const FriendShip = baseModel.friendshipModel;
+const Status = baseModel.statusModel;
+const schema = require('../schema/schema');
+const { number } = require("joi");
+const Op = baseModel.Sequelize.Op;
