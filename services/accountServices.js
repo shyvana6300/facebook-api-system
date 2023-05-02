@@ -209,6 +209,26 @@ function checkExpiredOTP(otp) {
     return differentMinutes > 1 ? false : true;
 }
 
+/**
+ * check permission of current account
+ * @param {*} email 
+ */
+const checkAuthorizeAdmin = async (email) => {
+    try {
+        // Get current account by email
+        const account = await Account.findOne({
+            where: {
+                email: email,
+            }
+        });
+        // Check account role
+        if(account.role !== 'admin') return false;
+        return true;
+    } catch (error) {
+        throw Error(error.message);
+    }
+}
+
 
 module.exports = {
     register: register,
@@ -220,5 +240,6 @@ module.exports = {
     findAccountByEmail: findAccountByEmail,
     getAccountById: getAccountById,
     checkExpiredOTP: checkExpiredOTP,
-    createProfileObject: createProfileObject
+    createProfileObject: createProfileObject,
+    checkAuthorizeAdmin: checkAuthorizeAdmin
 }

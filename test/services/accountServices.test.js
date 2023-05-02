@@ -253,7 +253,7 @@ describe("Test resetPassword()", () => {
 
         });
     });
-    
+
 });
 
 describe("Test generateOTP()", () => {
@@ -309,6 +309,43 @@ describe("Test register()", () => {
             }).rejects.toThrowError();
         });
     });
-})
+});
+
+describe("Test checkAuthorizeAdmin()", () => {
+    const checkAuthorizeAdmin = accountServices.checkAuthorizeAdmin;
+    describe("Test case OK: account has role admin", () => {
+        test("It should return true", async () => {
+            const mockEmail = 'mockEmail@gmail.com';
+            Account.findOne = jest.fn();
+            Account.findOne.mockReturnValue({
+                role: 'admin'
+            });
+            const result = await checkAuthorizeAdmin(mockEmail);
+            expect(result).toBe(true);
+        });
+    });
+
+    describe("Test case NG: account does not have role admin", () => {
+        test("It should return false", async () => {
+            const mockEmail = 'mockEmail@gmail.com';
+            Account.findOne = jest.fn();
+            Account.findOne.mockReturnValue({
+                role: 'user'
+            });
+            const result = await checkAuthorizeAdmin(mockEmail);
+            expect(result).toBe(false);
+        });
+    });
+
+    describe("Test case NG: server error", () => {
+        test("It should throw error", async () => {
+            const mockEmail = 'mockEmail@gmail.com';
+            Account.findOne = jest.fn();
+            expect(async () => {
+                await checkAuthorizeAdmin(mockEmail);
+            }).rejects.toThrowError();
+        });
+    });
+});
 
 

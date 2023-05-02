@@ -13,6 +13,4 @@ account_router.post('/resetPassword/:token', [authValidator.verifyTokenResetPwd 
 account_router.put('/updateProfile', [authValidator.verifyTokenLogin, fileUploader.uploadAvatar.single('avatar')], accountController.updateProfile);
 account_router.put('/primeUpgrade', authValidator.verifyTokenLogin, accountController.primeUpgrade);
 // test route for api who need login 
-account_router.get('/testGetToken', authValidator.verifyTokenLogin, accountController.testGetToken);
-account_router.get('/testApi', accountController.testApi);
 module.exports = account_router;

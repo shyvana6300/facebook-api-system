@@ -161,25 +161,6 @@ const primeUpgrade = (req, res) => {
     res.send(" ---primeUpgrade ---");
 };
 
-const testGetToken = (req, res) => {
-    /* 	#swagger.tags = ['Testing']
-        #swagger.description = 'Test API with login required' */
-    console.log("---Called /TestgetToken---");
-    res.send(" ---getToken ---");
-};
-
-const tmpFunction = (req, res) => {
-    console.log("---Called /HHHHH---");
-    res.send(" ---tmpFunction ---");
-};
-
-const testApi = (req, res) => {
-    /* 	#swagger.tags = ['Testing']
-        #swagger.description = 'Test API' */
-    console.log("---Called /testApi---");
-    res.status(200).send(" ---testApi Called ---");
-};
-
 module.exports = {
     register: register,
     loginOTP: loginOTP,
@@ -188,7 +169,4 @@ module.exports = {
     resetPassword: resetPassword,
     updateProfile: updateProfile,
     primeUpgrade: primeUpgrade,
-    tmpFunction: tmpFunction,
-    testApi: testApi,
-    testGetToken: testGetToken,
 };

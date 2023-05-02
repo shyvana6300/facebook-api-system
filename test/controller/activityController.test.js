@@ -400,7 +400,7 @@ describe("Test getTimeline()", () => {
     });
 });
 
-describe("Test getTimeline()", () => {
+describe("Test getReport()", () => {
     const getReport = activityController.getReport;
     const mockedReq = {
         email: 'mockEmail@gmail.com'
@@ -408,6 +408,7 @@ describe("Test getTimeline()", () => {
     describe("Test case OK", () => {
         test("It should return result", async () => {
             accountServices.findAccountByEmail = jest.fn(() => 'mock Account');
+            accountServices.checkAuthorizeAdmin = jest.fn(() => true);
             activityServices.getReport = jest.fn(() => 'mockResult');
             const mockedRes = {};
             mockedRes.status = jest.fn().mockReturnValue(mockedRes);
@@ -433,6 +434,22 @@ describe("Test getTimeline()", () => {
             // Expect value
             expect(mockedRes.status).toHaveBeenCalledWith(404);
             expect(mockedRes.send).toHaveBeenCalledWith({ message: 'Account does not exist!' });
+        });
+    });
+
+    describe("Test case NG 403", () => {
+        test("It should return error message: account not have permisson", async () => {
+            accountServices.findAccountByEmail = jest.fn(() => 'mock Account');
+            accountServices.checkAuthorizeAdmin = jest.fn(() => false);
+            activityServices.getReport = jest.fn(() => 'mockResult');
+            const mockedRes = {};
+            mockedRes.status = jest.fn().mockReturnValue(mockedRes);
+            mockedRes.send = jest.fn().mockReturnValue(mockedRes);
+            // Call the test function
+            await getReport(mockedReq, mockedRes);
+            // Expect value
+            expect(mockedRes.status).toHaveBeenCalledWith(403);
+            expect(mockedRes.send).toHaveBeenCalledWith({ message: 'Account does not have permission to get report' });
         });
     });
 

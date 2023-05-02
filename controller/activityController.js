@@ -176,6 +176,8 @@ const getReport = async (req, res) => {
         const account = await accountServices.findAccountByEmail(req.email);
         if (!account) {
             return res.status(404).send({ message: 'Account does not exist!' });
+        } else if (! await accountServices.checkAuthorizeAdmin(req.email)) {
+            return res.status(403).send({ message: 'Account does not have permission to get report' });
         }
         // Call service to get report
         const result = await activityServices.getReport(account.id);

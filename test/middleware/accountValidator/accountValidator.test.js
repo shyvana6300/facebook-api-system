@@ -240,6 +240,19 @@ describe("Test accountValidator", () => {
             expect(mockedRes.status).toHaveBeenCalledWith(404);
             expect(mockedRes.send).toHaveBeenCalledWith({ message: "OTP expired! Please login again!" });
         });
+
+        // Case NG5: 500 server error
+        test("It should throw Error", async () => {
+            // Mock dependencies
+            accountServices.findAccountByEmail = jest.fn(() => 'sample result');
+            accountServices.checkExpiredOTP = (3/0);
+            const mockedRes = jest.fn();
+            const mockedReq = mockReq.normal;
+            // Call the test function
+            expect(async () => {
+                await validateLoginToken(mockedReq, mockedRes, mockedNext);
+            }).rejects.toThrowError();
+        });
     });
 
     // Test validateEmailForgot()

@@ -17,10 +17,10 @@ describe("Test getReport()", () => {
     });
     describe("Test case NG", () => {
         test("It should throw Error", async () => {
-            const mockAccountId = (3/0);
+            const mockAccountId = (3 / 0);
             expect(async () => {
                 await getReport(mockAccountId);
-            }).rejects.toThrowError();
+            }).rejects.toThrowError('l');
         });
     });
 });
@@ -90,7 +90,7 @@ describe("Test addComment()", () => {
     });
 
     describe("Test case NG", () => {
-        test("It should return mockResult", async () => {
+        test("It should throw Error", async () => {
             // Mock dependencies
             const mockIdStatus = 'mockIdStatus';
             const mockIdAccount = 'mockIdAccount';
@@ -103,7 +103,7 @@ describe("Test addComment()", () => {
             });
             // Call the test function and expect value
             expect(async () => {
-                await postStatus(mockAccountId, mockStatusImage, mockStatusContent, mockProtocol, mockHost);
+                await addComment(mockIdStatus, mockIdAccount, mockContent);
             }).rejects.toThrowError();
         });
     });
@@ -214,7 +214,7 @@ describe("Test reactStatus()", () => {
             });
             Reaction.findOne = jest.fn(() => null);
             Reaction.create = jest.fn(() => 'mockNewReaction');
-            const result = await reactStatus(mockIdStatus,mockIdReactor);
+            const result = await reactStatus(mockIdStatus, mockIdReactor);
             expect(result).toBe('mockNewReaction');
         });
     });
@@ -230,7 +230,7 @@ describe("Test reactStatus()", () => {
             });
             Reaction.findOne = jest.fn(() => 'mockReaction');
             Reaction.destroy = jest.fn();
-            const result = await reactStatus(mockIdStatus,mockIdReactor);
+            const result = await reactStatus(mockIdStatus, mockIdReactor);
             expect(result).toBe('React unlike status successful!');
         });
     });
@@ -244,9 +244,9 @@ describe("Test reactStatus()", () => {
                 commit: jest.fn(() => { }),
                 rollback: jest.fn(() => { })
             });
-            Reaction.findOne = (3/0);
+            Reaction.findOne = (3 / 0);
             expect(async () => {
-                await reactStatus(mockIdStatus,mockIdReactor);
+                await reactStatus(mockIdStatus, mockIdReactor);
             }).rejects.toThrowError();
         });
     });
@@ -265,20 +265,68 @@ describe("Test getTimeline()", () => {
         });
     });
 
+    describe("Test case OK2: only offset", () => {
+        test("It should return result", async () => {
+            const mockAccountId = 'mockAccountId';
+            const mockLimitParam = null;
+            const mockOffsetParam = 'mockOffsetParam';
+            baseModel.sequelize.query = jest.fn(() => 'mockRecords');
+            const result = await getTimeline(mockAccountId, mockLimitParam, mockOffsetParam);
+            expect(result).toBe('mockRecords');
+        });
+    });
+
+    describe("Test case OK3: only limit", () => {
+        test("It should return result", async () => {
+            const mockAccountId = 'mockAccountId';
+            const mockLimitParam = 'mockLimitParam';
+            const mockOffsetParam = null;
+            baseModel.sequelize.query = jest.fn(() => 'mockRecords');
+            const result = await getTimeline(mockAccountId, mockLimitParam, mockOffsetParam);
+            expect(result).toBe('mockRecords');
+        });
+    });
+
     describe("Test case NG", () => {
         test("It should throw Error", async () => {
             const mockAccountId = 'mockAccountId';
             const mockLimitParam = 'mockLimitParam';
             const mockOffsetParam = 'mockOffsetParam';
-            baseModel.sequelize.query = (3/0);
+            baseModel.sequelize.query = (3 / 0);
             expect(async () => {
                 await getTimeline(mockAccountId, mockLimitParam, mockOffsetParam);
             }).rejects.toThrowError();
         });
     });
-    
+
 
 });
 
+describe("Test getStatusById()", () => {
+    const getStatusById = activityServices.getStatusById
+    describe("Test case OK", () => {
+        test("It should return result", async () => {
+            // Mock dependencies
+            const mockStatusId = 'mockStatusId';
+            Status.findOne = jest.fn(() => 'mockStatus');
+            // Call test function and expect value
+            const result = await getStatusById(mockStatusId);
+            expect(result).toBe('mockStatus');
+        });
+    });
+
+    describe("Test case NG: server error", () => {
+        test("It should throw Error", async () => {
+            // Mock dependencies
+            const mockStatusId = 'mockStatusId';
+            Status.findOne = (3 / 0);
+            // Call test function and expect value
+            expect(async () => {
+                await getStatusById(mockStatusId);
+            }).rejects.toThrowError();
+
+        })
+    })
+})
 
 
