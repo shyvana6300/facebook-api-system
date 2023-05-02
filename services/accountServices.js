@@ -124,6 +124,8 @@ const updateProfile = async (req) => {
             },
             trasaction: transaction
          });
+         console.log('======Result')
+         console.log(result)
         await transaction.commit();
         return result;
     } catch (error) {
@@ -191,6 +193,7 @@ const getAccountById = async (accountId) => {
     }
 }
 
+
 /**
  * Check if otp valid
  * @param {*} otp 
@@ -205,6 +208,7 @@ function checkExpiredOTP(otp) {
     console.log("---khoang cach phut  = " + differentMinutes);
     return differentMinutes > 1 ? false : true;
 }
+
 
 module.exports = {
     register: register,

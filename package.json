@@ -10,6 +10,7 @@
   "scripts": {
     "jest": "jest --env=node --colors --coverage test",
     "test": "jest",
+    "test-coverage": "jest --coverage",
     "start": "node main.js"
   },
   "engine" : {

@@ -127,4 +127,149 @@ describe("Test createProfileObject()", () => {
             gender: 'mockGender'
         })
     })
-})
+});
+
+describe("Test updateProfile()", () => {
+    const updateProfile = accountServices.updateProfile;
+    describe("Test case OK", () => {
+        test('It should return result', async () => {
+            // Mock dependencies
+            const mockReq = {
+                body: {
+                    "fullName": "your name",
+                    "birthday": "1992-10-16",
+                    "job": "your job",
+                    "address": "your address",
+                    "gender": "your gender"
+                  },
+                  email: 'mockEmail@gmail.com',
+                  get: jest.fn((arg) => 'mock')
+            }
+            baseModel.sequelize.transaction = jest.fn();
+            baseModel.sequelize.transaction.mockReturnValue({
+                commit: jest.fn(() => {}),
+                rollback: jest.fn(() => {}) 
+            });
+            accountServices.createProfileObject = jest.fn(() => 'mockObject');
+            Account.update = jest.fn(() => 'mockResult');
+            // Call the test function
+            const result = await updateProfile(mockReq);
+            expect(result).toBe('mockResult');
+
+        });
+    });
+    describe("Test case NG: server Error", () => {
+        test('It should throw error', async () => {
+            // Mock dependencies
+            const mockReq = {
+                body: {
+                    "fullName": "your name",
+                    "birthday": "1992-10-16",
+                    "job": "your job",
+                    "address": "your address",
+                    "gender": "your gender"
+                  },
+                  email: 'mockEmail@gmail.com',
+                  get: jest.fn((arg) => 'mock')
+            }
+            baseModel.sequelize.transaction = jest.fn();
+            baseModel.sequelize.transaction.mockReturnValue({
+                commit: jest.fn(() => {}),
+                rollback: jest.fn(() => {}) 
+            });
+            accountServices.createProfileObject = jest.fn(() => 'mockObject');
+            Account.update = (3/0);
+            // Call the test function
+            expect(async () => {
+                await updateProfile(mockReq)
+            }).rejects.toThrowError();
+        });
+    });
+});
+
+describe("Test generateURLForgetPassword()", () => {
+    const generateURLForgetPassword = accountServices.generateURLForgetPassword;
+    test("It should return URL reset password", async () => {
+        // Mock dependencies
+        const mockEmail = 'mockEmail@gmail.com';
+        const mockHost = 'mockHost';
+        const mockProtocol = 'mockProtocol';
+        jwt.sign = jest.fn(() => 'mockToken');
+        accountServices.generateToken = await jest.fn();
+        await accountServices.generateToken.mockReturnValue('mockTokesn');
+        // Call test function and expect value
+        const result = await generateURLForgetPassword(mockEmail, mockProtocol, mockHost);
+        expect(result).toBe('mockProtocol://mockHost/account/resetPassword/mockToken');
+    })
+});
+
+describe("Test generateToken()", () => {
+    const generateToken = accountServices.generateToken;
+    test('It should return result', () => {
+        // Mock dependencies
+        const mockEmail = 'mockEmail@gmail.com';
+        const mockExpired = 'mockExpired';
+        jwt.sign = jest.fn(() => 'mockResult');
+        // Call test function and expect value
+        const result = generateToken(mockEmail, mockExpired);
+        expect(result).toBe('mockResult');
+    });
+});
+
+describe("Test resetPassword()", () => {
+    const resetPassword = accountServices.resetPassword;
+    describe("Test case OK", () => {
+        test('It should return result', async () => {
+            // Mock dependencies
+            const mockEmail = 'mockEmail@gmail.com';
+            const mockNewPassword = 'mockNewPassword';
+            baseModel.sequelize.transaction = jest.fn();
+            baseModel.sequelize.transaction.mockReturnValue({
+                commit: jest.fn(() => {}),
+                rollback: jest.fn(() => {}) 
+            });
+            Account.update = jest.fn(() => 'mockResult');
+            // Call the test function
+            const result = await resetPassword(mockEmail, mockNewPassword);
+            expect(result).toBe('mockResult');
+
+        });
+    });
+
+    describe("Test case NG", () => {
+        test('It should return result', async () => {
+            // Mock dependencies
+            const mockEmail = 'mockEmail@gmail.com';
+            const mockNewPassword = 'mockNewPassword';
+            baseModel.sequelize.transaction = jest.fn();
+            baseModel.sequelize.transaction.mockReturnValue({
+                commit: jest.fn(() => {}),
+                rollback: jest.fn(() => {}) 
+            });
+            Account.update = (3/0);
+            // Call the test function and expect result
+            expect(async () => {
+                await resetPassword(mockEmail, mockNewPassword);
+            }).rejects.toThrowError();
+
+        });
+    });
+    
+});
+
+describe("Test generateOTP()", () => {
+    const generateOTP = accountServices.generateOTP;
+    test('It should return mockOTP', async () => {
+        // Mock dependencies
+        otpGenerator.generateOTP = jest.fn(() => 'mockOTP');
+        const mockDate = new Date(1683022669630)
+        const spy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+        const result = await generateOTP();
+        expect(result).toStrictEqual({
+            value: 'mockOTP',
+            timeCreated: 1683022669630
+        });
+    })
+});
+
+
