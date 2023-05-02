@@ -5,7 +5,6 @@ const Comment = baseModel.commentModel;
 const FriendShip = baseModel.friendshipModel;
 const Status = baseModel.statusModel;
 const schema = require('../schema/schema');
-const { number } = require("joi");
 const Op = baseModel.Sequelize.Op;
 /**
  * 
@@ -66,7 +65,7 @@ const addComment = async (idStatus, idAccount, content) => {
  * @param {*} res 
  * @returns 
  */
-const validateAddingFriend = async (req, res) => {
+const validateAddingFriend = async (req) => {
     let result = await schema.schemaFriendship.validate(req.body);
     if (result.error) {
         return {
@@ -106,18 +105,15 @@ const addFriend = async (idFriend, idAccount) => {
     const transaction = await baseModel.sequelize.transaction();
     try {
         // create new friendship for user
-        const friendship = await FriendShip.create({
+        await FriendShip.create({
             idFriend: idFriend,
             accountId: idAccount,
         }, { trasaction: transaction });
         // create new friendship for friend
-        const friendshipForFriend = await FriendShip.create({
+        await FriendShip.create({
             idFriend: idAccount,
             accountId: idFriend,
         }, { trasaction: transaction });
-        console.log('friendship = ');
-        console.log(friendship);
-        console.log(friendshipForFriend);
         await transaction.commit();
         return "Create friendship successful!";
 
@@ -184,16 +180,12 @@ const getTimeline = async (accountId, limitParam, offsetParam) => {
         const limit = limitParam ? limitParam : null;
         let limitQuery = '';
         if (offset && limit) {
-            console.log('=== co ca 2');
             limitQuery = `limit ${offset}, ${limit}`;
         } else if (offset) {
-            console.log('=== chi co offset');
             limitQuery = `limit ${offset}`;
         } else if (limit) {
-            console.log('=== chi co limit');
             limitQuery = `limit ${limit}`;
         }
-        console.log('>>>>> limitQuery = ' + limitQuery);
         // select all status of account's friends
         const records = await baseModel.sequelize.query(
             `SELECT st.id idStatus, st.*, email, fr.accountId, idFriend
@@ -208,7 +200,6 @@ const getTimeline = async (accountId, limitParam, offsetParam) => {
             {
                 type: QueryTypes.SELECT
             });
-        console.log(records);
         return records;
     } catch (error) {
         throw Error(error.message);
@@ -230,24 +221,6 @@ const createStatusObject = (statusImage, statusContent, accountId, protocol, hos
     statusImage && (statusObject.imageUrl = `${protocol}://${host}/status/${statusImage.originalname}`);
     statusObject.accountId = accountId;
     return statusObject;
-}
-
-/**
- * get status by id given
- * @param {*} statusId 
- * @returns 
- */
-const getStatusById = async (statusId) => {
-    try {
-        const status = await Status.findOne({
-            where: {
-                id: statusId,
-            }
-        });
-        return status;
-    } catch (error) {
-        throw Error(error.message);
-    }
 }
 
 /**
@@ -281,14 +254,6 @@ const getReport = async (idAccount) => {
         ws.cell(1, 2).string('Số bạn bè mới tuần qua').style(style);
         ws.cell(1, 3).string('Số comment mới tuần qua').style(style);
         ws.cell(1, 4).string('Số like mới tuần qua').style(style);
-        console.log('----statusCount = ');
-        console.log(statusCount);
-        console.log('----friendCount = ');
-        console.log(friendCount);
-        console.log('----commentCount = ');
-        console.log(commentCount);
-        console.log('----likeCount = ');
-        console.log(likeCount);
         // Hàng thứ 2
         ws.cell(2, 1).number(statusCount).style(style);
         ws.cell(2, 2).number(friendCount).style(style);
@@ -300,6 +265,24 @@ const getReport = async (idAccount) => {
         return "Create report successful!";
     } catch (error) {
         throw new Error(error.message);
+    }
+}
+
+/**
+ * get status by id given
+ * @param {*} statusId 
+ * @returns 
+ */
+const getStatusById = async (statusId) => {
+    try {
+        const status = await Status.findOne({
+            where: {
+                id: statusId,
+            }
+        });
+        return status;
+    } catch (error) {
+        throw Error(error.message);
     }
 }
 
@@ -374,12 +357,12 @@ const getFriendReport = async (accountId) => {
 }
 module.exports = {
     postStatus: postStatus,
-    getStatusById: getStatusById,
     addComment: addComment,
-    reactStatus: reactStatus,
-    addFriend: addFriend,
     validateAddingFriend: validateAddingFriend,
     isFriendShipExist: isFriendShipExist,
+    addFriend: addFriend,
+    reactStatus: reactStatus,
     getTimeline: getTimeline,
-    getReport: getReport
+    getReport: getReport,
+    getStatusById: getStatusById,
 }
