@@ -246,51 +246,6 @@
         }
       }
     },
-    "/account/primeUpgrade": {
-      "put": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized or expired token"
-          }
-        }
-      }
-    },
-    "/account/testGetToken": {
-      "get": {
-        "tags": [
-          "Testing"
-        ],
-        "description": "Test API with login required",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized or expired token"
-          }
-        }
-      }
-    },
-    "/account/testApi": {
-      "get": {
-        "tags": [
-          "Testing"
-        ],
-        "description": "Test API",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/activity/postStatus": {
       "post": {
         "tags": [
@@ -503,6 +458,9 @@
           },
           "401": {
             "description": "Unauthorized or expired token"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "User Account Does Not Exist"
