@@ -300,8 +300,6 @@ const getStatusReport = async (accountId) => {
             ],
         }
     });
-    await console.log('====status number = ');
-    await console.log(numberStatus);
     return numberStatus;
 }
 

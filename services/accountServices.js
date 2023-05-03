@@ -38,7 +38,6 @@ const generateOTP = async () => {
         value: otpGenerator.generateOTP(),
         timeCreated: new Date().getTime()
     }
-    console.log('====OTP generated: ' + JSON.stringify(otp));
     return otp;
 };
 
@@ -124,8 +123,6 @@ const updateProfile = async (req) => {
             },
             trasaction: transaction
          });
-         console.log('======Result')
-         console.log(result)
         await transaction.commit();
         return result;
     } catch (error) {
@@ -200,12 +197,13 @@ const getAccountById = async (accountId) => {
  * @returns 
  */
 function checkExpiredOTP(otp) {
-    console.log('===checkexpired OTP: ' + otp);
+    // Check if otp not exist
     if (!otp) return false;
+    // Get current time
     const currentTime = new Date().getTime();
-    console.log('====current time = '+currentTime);
+    // Calculate time between current time and otp's time created
     const differentMinutes = (currentTime - otp.timeCreated) / 1000 / 60;
-    console.log("---khoang cach phut  = " + differentMinutes);
+    // Return result
     return differentMinutes > 1 ? false : true;
 }
 

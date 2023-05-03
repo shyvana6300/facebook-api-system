@@ -29,8 +29,6 @@ const validatePostStatus = async (req, res, next) => {
  */
 const validateComment = (req, res, next) => {
     let result = schema.schemaComment.validate(req.body);
-    console.log('#####');
-    console.log(result);
     if (result.error) {
         /* #swagger.responses[400] = { description: 'Invalid comment input' } */   
         return res.status(400).send(result.error.details[0].message);

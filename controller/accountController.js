@@ -34,8 +34,6 @@ const loginOTP = async (req, res) => {
     } */
 
     const otp = await accountServices.generateOTP();
-    console.log('=====');
-    console.log(JSON.stringify(otp));
     req.session.otp = otp;
     req.session.email = req.body.email;
     /* #swagger.responses[200] = { description: 'Email and password is valid - Return OTP' } */
@@ -106,8 +104,9 @@ const resetPassword = async (req, res) => {
             /* #swagger.responses[200] = { description: 'Create new password successful' } */
             // delete login session if user is logged in
             if (req.session.tokenLogin) delete req.session.tokenLogin;
-            res.status(200).send('Your password has been updated!');
-        }
+            return res.status(200).send('Your password has been updated!');
+        } else return res.status(500).send('Reset password failed for account ' + req.email);
+        
     } catch (error) {
         res.status(500).send({
             message: "Error reset password for account " + req.email
@@ -156,10 +155,10 @@ const updateProfile = async (req, res) => {
     };
 };
 
-const primeUpgrade = (req, res) => {
-    console.log("---Called /primeUpgrade---");
-    res.send(" ---primeUpgrade ---");
-};
+// const primeUpgrade = (req, res) => {
+//     console.log("---Called /primeUpgrade---");
+//     res.send(" ---primeUpgrade ---");
+// };
 
 module.exports = {
     register: register,
@@ -168,5 +167,5 @@ module.exports = {
     forgotPassword: forgotPassword,
     resetPassword: resetPassword,
     updateProfile: updateProfile,
-    primeUpgrade: primeUpgrade,
+    // primeUpgrade: primeUpgrade,
 };

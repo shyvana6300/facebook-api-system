@@ -113,7 +113,7 @@ describe('Test resetPassword', () => {
             tokenLogin: 'mockToken'
         }
     }
-    // Test case OK
+    // Test case OK1: delete session tokenLogin
     describe('Test case OK', () => {
         test('It should return message udate password successful', async () => {
             // Mock dependencies
@@ -124,6 +124,32 @@ describe('Test resetPassword', () => {
             accountServices.resetPassword = jest.fn((email, password) => 1);
             // Call the test function
             await resetPassword(mockedReq, mockedRes);
+            // Expect value
+            expect(mockedRes.status).toHaveBeenCalledWith(200);
+            expect(mockedRes.send).toHaveBeenCalledWith('Your password has been updated!');
+        })
+    });
+
+    // Test case OK2: session token login doesn't exist
+    describe('Test case OK', () => {
+        test('It should return message udate password successful', async () => {
+            const mockedReq2 = {
+                email: 'mockEmail@gmail.com',
+                body: {
+                    newPassword: 'mockNewPassword'
+                },
+                session: {
+                    tokenLogin: null
+                }
+            }
+            // Mock dependencies
+            const mockedRes = {};
+            mockedRes.status = jest.fn().mockReturnValue(mockedRes);
+            mockedRes.send = jest.fn().mockReturnValue(mockedRes);
+            accountServices.findAccountByEmail = jest.fn((args) => 'mockAccount');
+            accountServices.resetPassword = jest.fn((email, password) => 1);
+            // Call the test function
+            await resetPassword(mockedReq2, mockedRes);
             // Expect value
             expect(mockedRes.status).toHaveBeenCalledWith(200);
             expect(mockedRes.send).toHaveBeenCalledWith('Your password has been updated!');
@@ -145,7 +171,24 @@ describe('Test resetPassword', () => {
         })
     });
 
-    // Test case NG 500
+    // Test case NG 500: reset password failed
+    describe('Test case 500', () => {
+        test('It should return message udate password failed', async () => {
+            // Mock dependencies
+            const mockedRes = {};
+            mockedRes.status = jest.fn().mockReturnValue(mockedRes);
+            mockedRes.send = jest.fn().mockReturnValue(mockedRes);
+            accountServices.findAccountByEmail = jest.fn((args) => 'mockAccount');
+            accountServices.resetPassword = jest.fn((email, password) => 0);
+            // Call the test function
+            await resetPassword(mockedReq, mockedRes);
+            // Expect value
+            expect(mockedRes.status).toHaveBeenCalledWith(500);
+            expect(mockedRes.send).toHaveBeenCalledWith('Reset password failed for account ' + mockedReq.email);
+        })
+    });
+
+    // Test case NG 500: Server error
     describe('Test case NG: 500', () => {
         test('It should return message server error', async () => {
             // Mock dependencies

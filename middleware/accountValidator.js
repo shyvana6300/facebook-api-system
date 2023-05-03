@@ -112,7 +112,6 @@ const validateLoginToken = async (req, res, next) => {
 const validateEmailForgot = async (req, res, next) => {
     const schemaEmailForgot = schema.schemaEmailForgot;
     const result = schemaEmailForgot.validate(req.body);
-    console.log(result);
     if (result.error) {
         /* #swagger.responses[400] = { description: 'Invalid email' } */
         return res.status(400).send(result.error.details[0].message);
