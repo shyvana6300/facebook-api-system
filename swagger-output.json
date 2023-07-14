@@ -5,7 +5,7 @@
     "title": "Facebook REST API",
     "description": "Document Swagger for Facebook API"
   },
-  "host": "localhost:3000",
+  "host": "10.0.1.75:80",
   "basePath": "/",
   "tags": [
     {

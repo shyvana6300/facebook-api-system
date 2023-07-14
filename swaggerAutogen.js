@@ -6,7 +6,7 @@ const doc = {
         title: 'Facebook REST API',        // by default: 'REST API'
         description: 'Document Swagger for Facebook API',  // by default: ''
     },
-    host: 'localhost:3000',      // by default: 'localhost:3000'
+    host: '10.0.1.75:80',      // by default: 'localhost:3000'
     basePath: '/',  // by default: '/'
     schemes: ['http'],   // by default: ['http']
     consumes: ['application/json'],  // by default: ['application/json']
