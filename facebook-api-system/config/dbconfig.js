@@ -1,13 +1,13 @@
 module.exports = {
-//   HOST: process.env.DB_HOST,
-//   USER: process.env.DB_USER,
-//   PASSWORD: process.env.DB_PASSWORD,
-//   DB: process.env.DB_NAME,
-
-  HOST: "localhost",
-  USER: "shyvana6300",
-  PASSWORD: "Shyvana@6300",
-  DB: "facebook_api_db",
+  HOST: process.env.DB_HOST,
+  USER: process.env.MYSQLDB_USER,
+  PASSWORD: process.env.MYSQLDB_ROOT_PASSWORD,
+  DB: process.env.MYSQLDB_DATABASE,
+  PORT: process.env.MYSQLDB_LOCAL_PORT,
+//   HOST: "localhost",
+//   USER: "shyvana6300",
+//   PASSWORD: "Shyvana@6300",
+//   DB: "facebook_api_db",
 
   dialect: "mysql",
   pool: {
