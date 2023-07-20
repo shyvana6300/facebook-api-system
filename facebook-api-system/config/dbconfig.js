@@ -1,8 +1,14 @@
 module.exports = {
-  HOST: process.env.DB_HOST,
-  USER: process.env.DB_USER,
-  PASSWORD: process.env.DB_PASSWORD,
-  DB: process.env.DB_NAME,
+//   HOST: process.env.DB_HOST,
+//   USER: process.env.DB_USER,
+//   PASSWORD: process.env.DB_PASSWORD,
+//   DB: process.env.DB_NAME,
+
+  HOST: "localhost",
+  USER: "shyvana6300",
+  PASSWORD: "Shyvana@6300",
+  DB: "facebook_api_db",
+
   dialect: "mysql",
   pool: {
     //maximum number of connection in pool
