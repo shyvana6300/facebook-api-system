@@ -13,7 +13,7 @@
     "test-coverage": "jest --coverage",
     "start": "node main.js"
   },
-  "engine" : {
+  "engine": {
     "node": "18.15.0"
   },
   "author": "LongNH",
@@ -23,7 +23,7 @@
     "body-parser": "^1.20.2",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.1",
     "excel4node": "^1.8.1",
     "express": "^4.18.2",
     "helmet": "^6.1.5",
