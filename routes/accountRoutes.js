@@ -10,7 +10,7 @@ account_router.post('/login', [accountValidator.validateAccount, accountValidato
 account_router.post('/getTokenLogin', [accountValidator.validateLoginTokenSchema, accountValidator.validateLoginToken], accountController.getTokenLogin);
 account_router.post('/forgotPassword', accountValidator.validateEmailForgot, accountController.forgotPassword);
 account_router.post('/resetPassword/:token', [authValidator.verifyTokenResetPwd ,accountValidator.validateNewPassword], accountController.resetPassword);
-account_router.put('/updateProfile', [authValidator.verifyTokenLogin, fileUploader.uploadAvatar.single('avatar')], accountController.updateProfile);
+account_router.put('/:userId', [authValidator.verifyTokenLogin, fileUploader.uploadAvatar.single('avatar')], accountController.updateProfile);
 // account_router.put('/primeUpgrade', authValidator.verifyTokenLogin, accountController.primeUpgrade);
 // test route for api who need login 
 module.exports = account_router;

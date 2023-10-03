@@ -208,13 +208,19 @@
         }
       }
     },
-    "/account/updateProfile": {
+    "/account/{userId}": {
       "put": {
         "tags": [
           "Account"
         ],
         "description": "Update account profile",
         "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "Avatar Image",
             "in": "formData",
@@ -246,7 +252,7 @@
         }
       }
     },
-    "/activity/postStatus": {
+    "/activity/status": {
       "post": {
         "tags": [
           "Activity"
@@ -289,15 +295,53 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Activity"
+        ],
+        "description": "Timeline of friend activity",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get timeline successful"
+          },
+          "401": {
+            "description": "Unauthorized or expired token"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-    "/activity/addComment": {
+    "/activity/status/{statusId}/comment": {
       "post": {
         "tags": [
           "Activity"
         ],
         "description": "Add a new comment",
         "parameters": [
+          {
+            "name": "statusId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -333,13 +377,19 @@
         }
       }
     },
-    "/activity/reactStatus": {
+    "/activity/status/{statusId}/reaction": {
       "post": {
         "tags": [
           "Activity"
         ],
         "description": "Like/Unlike a status",
         "parameters": [
+          {
+            "name": "statusId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -372,13 +422,19 @@
         }
       }
     },
-    "/activity/addFriend": {
+    "/activity/friend/{idFriend}": {
       "post": {
         "tags": [
           "Activity"
         ],
         "description": "Add a friend",
         "parameters": [
+          {
+            "name": "idFriend",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -411,47 +467,12 @@
         }
       }
     },
-    "/activity/timeline": {
-      "get": {
-        "tags": [
-          "Activity"
-        ],
-        "description": "Timeline of friend activity",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Get timeline successful"
-          },
-          "401": {
-            "description": "Unauthorized or expired token"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/activity/report": {
       "get": {
         "tags": [
           "Activity"
         ],
         "description": "Get report of account activity pass a week",
-        "parameters": [],
         "responses": {
           "201": {
             "description": "Create report successful"

@@ -5,7 +5,7 @@ const activityValidator = require('../middleware/activityValidator');
 const authValidator = require('../middleware/authenValidator');
 const activity_router = express.Router();
 
-activity_router.post('/postStatus',
+activity_router.post('/status',
     [
         authValidator.verifyTokenLogin,
         fileUploader.uploadStatusImage.single('statusImage'),
@@ -13,12 +13,12 @@ activity_router.post('/postStatus',
     ],
     activityController.postStatus);
 
-activity_router.post('/addComment', [authValidator.verifyTokenLogin, activityValidator.validateComment], activityController.addComment);
+activity_router.post('/status/:statusId/comment', [authValidator.verifyTokenLogin, activityValidator.validateComment], activityController.addComment);
 
-activity_router.post('/reactStatus', [authValidator.verifyTokenLogin, activityValidator.validateReaction], activityController.reactStatus);
+activity_router.post('/status/:statusId/reaction', [authValidator.verifyTokenLogin, activityValidator.validateReaction], activityController.reactStatus);
 
-activity_router.post('/addFriend', [authValidator.verifyTokenLogin], activityController.addFriend);
-activity_router.get('/timeline', [authValidator.verifyTokenLogin], activityController.getTimeline);
+activity_router.post('/friend/:idFriend', [authValidator.verifyTokenLogin], activityController.addFriend);
+activity_router.get('/status', [authValidator.verifyTokenLogin], activityController.getTimeline);
 activity_router.get('/report', [authValidator.verifyTokenLogin], activityController.getReport);
 
 module.exports = activity_router;
