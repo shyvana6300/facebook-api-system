@@ -52,7 +52,7 @@ const addComment = async (req, res) => {
             return res.status(404).send({ message: 'Account does not exist!' });
         }
         // Check if status exist
-        const status = await activityServices.getStatusById(req.body.idStatus);
+        const status = await activityServices.getStatusById(req.params["statusId"]);
         if (!status) {
             return res.status(404).send('Status does not exist!');
         }
@@ -188,11 +188,58 @@ const getReport = async (req, res) => {
     }
 }
 
+/**
+ * Edit a comment
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const editComment = async (req, res) => {
+    try {
+        /* 	#swagger.tags = ['Activity']
+            #swagger.description = 'Edit a comment' */
+        // Check status exist
+        const statusId = req.params['statusId'];
+        const status = await activityServices.getStatusById(statusId);
+        if (!status) {
+            return res.status(404).send({ message: 'Satus does not exist!' });
+        }
+        // Check comment exist
+        const commentId = req.params['commentId'];
+        const comment = await activityServices.getCommentById(commentId);
+        if (!comment) {
+            return res.status(404).send({ message: 'Comment does not exist'});
+        }
+        const newContent = req.body.content;
+        // Call service edit comment
+        await activityServices.editComment(commentId, newContent);
+        console.log("-------");
+        return res.status(201).send("Edit comment success!");
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred when edit comment.");
+    }
+}
+/**
+ * Get all comments of all status
+ * @param {*} req 
+ * @param {*} res 
+ */
+const getAllComment = async (req, res) => {
+    try {
+        const result = await activityServices.getAllComment();
+        res.status(201).send(result);
+    } catch (error) {
+        res.status(500).send("Unexpected error occurred when get all comment.");
+    }
+}
 module.exports = {
     postStatus: postStatus,
     addComment: addComment,
     reactStatus: reactStatus,
     addFriend: addFriend,
     getTimeline: getTimeline,
-    getReport: getReport
+    getReport: getReport,
+    // update October 2023
+    editComment: editComment,
+    getAllComment: getAllComment
 }

@@ -28,8 +28,7 @@ const schemaNewPassword = Joi.object({
 })
 
 const schemaComment = Joi.object({
-    content: Joi.string().required(),
-    idStatus: Joi.number().required()
+    content: Joi.string().required()
 })
 const schemaReaction = Joi.object({
     idStatus: Joi.number().required()

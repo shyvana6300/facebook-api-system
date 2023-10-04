@@ -178,13 +178,14 @@ const getTimeline = async (accountId, limitParam, offsetParam) => {
     try {
         const offset = offsetParam ? offsetParam : null;
         const limit = limitParam ? limitParam : null;
-        let limitQuery = '';
+        let filterQuery = '';
+        // TODO: thu viet = destructuring
         if (offset && limit) {
-            limitQuery = `limit ${offset}, ${limit}`;
+            filterQuery = `limit ${offset}, ${limit}`;
         } else if (offset) {
-            limitQuery = `limit ${offset}`;
+            filterQuery = `limit ${offset}`;
         } else if (limit) {
-            limitQuery = `limit ${limit}`;
+            filterQuery = `limit ${limit}`;
         }
         // select all status of account's friends
         const records = await baseModel.sequelize.query(
@@ -196,7 +197,7 @@ const getTimeline = async (accountId, limitParam, offsetParam) => {
             on st.accountId = fr.idFriend
             where fr.accountId = ${accountId}
             order by updatedAt desc
-            ${limitQuery}`,
+            ${filterQuery}`,
             {
                 type: QueryTypes.SELECT
             });
@@ -285,7 +286,23 @@ const getStatusById = async (statusId) => {
         throw Error(error.message);
     }
 }
-
+/**
+ * Get comment by Id
+ * @param {*} commentId 
+ * @returns 
+ */
+const getCommentById = async (commentId) => {
+    try {
+        const comment = await Comment.findOne({
+            where: {
+                id: commentId,
+            }
+        });
+        return comment;
+    } catch (error) {
+        throw Error(error.message);
+    }
+}
 /**
  * Get the number of new status in the past 1 week
  * @param {*} accountId current account for report
@@ -353,6 +370,46 @@ const getFriendReport = async (accountId) => {
     });
     return numberFriend;
 }
+
+/**
+ * Edit a comment
+ * @param {*} commentId 
+ * @param {*} statusId 
+ */
+const editComment = async (commentId, newContent) => {
+    console.log("---Called /service editComment---");
+    const transaction = await baseModel.sequelize.transaction();
+    try {
+        const result = await Comment.update({
+            content: newContent
+        }, {
+            where: {
+                id: commentId
+            },
+            transaction: transaction
+        });
+        await transaction.commit();
+        return result;
+    } catch (error) {
+        await transaction.rollback();
+        throw Error(error.message);
+    }
+}
+/**
+ * 
+ * @param {*} commentId 
+ * @param {*} newContent 
+ */
+const getAllComment = async (commentId, newContent) => {
+    console.log("---Called /service getAllComments---");
+    try {
+        const listComments = await Comment.findAll();
+        return listComments;
+    } catch (error) {
+        await transaction.rollback();
+        throw Error(error.message);
+    }
+}
 module.exports = {
     postStatus: postStatus,
     addComment: addComment,
@@ -363,4 +420,8 @@ module.exports = {
     getTimeline: getTimeline,
     getReport: getReport,
     getStatusById: getStatusById,
+    // update Octerber 2023
+    editComment: editComment,
+    getAllComment: getAllComment,
+    getCommentById: getCommentById
 }

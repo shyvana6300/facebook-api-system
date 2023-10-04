@@ -348,9 +348,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "idStatus": {
-                  "example": "any"
-                },
                 "content": {
                   "example": "any"
                 }
@@ -370,6 +367,73 @@
           },
           "404": {
             "description": "Status or commenter not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/activity/status/{statusId}/comments/{commentId}": {
+      "put": {
+        "tags": [
+          "Activity"
+        ],
+        "description": "Edit a comment",
+        "parameters": [
+          {
+            "name": "statusId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid comment input"
+          },
+          "401": {
+            "description": "Unauthorized or expired token"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/activity/status/comments": {
+      "get": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized or expired token"
           },
           "500": {
             "description": "Internal Server Error"
@@ -422,19 +486,13 @@
         }
       }
     },
-    "/activity/friend/{idFriend}": {
+    "/activity/friend/": {
       "post": {
         "tags": [
           "Activity"
         ],
         "description": "Add a friend",
         "parameters": [
-          {
-            "name": "idFriend",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",

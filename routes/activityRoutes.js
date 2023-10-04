@@ -14,10 +14,13 @@ activity_router.post('/status',
     activityController.postStatus);
 
 activity_router.post('/status/:statusId/comment', [authValidator.verifyTokenLogin, activityValidator.validateComment], activityController.addComment);
-
+// update October 2023
+activity_router.put('/status/:statusId/comments/:commentId', [authValidator.verifyTokenLogin, activityValidator.validateComment], activityController.editComment);
+activity_router.get('/status/comments', [authValidator.verifyTokenLogin], activityController.getAllComment);
+// activity_router.delete('/status/:statusId/comments/:commentId')
 activity_router.post('/status/:statusId/reaction', [authValidator.verifyTokenLogin, activityValidator.validateReaction], activityController.reactStatus);
 
-activity_router.post('/friend/:idFriend', [authValidator.verifyTokenLogin], activityController.addFriend);
+activity_router.post('/friend/', [authValidator.verifyTokenLogin], activityController.addFriend);
 activity_router.get('/status', [authValidator.verifyTokenLogin], activityController.getTimeline);
 activity_router.get('/report', [authValidator.verifyTokenLogin], activityController.getReport);
 
