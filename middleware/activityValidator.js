@@ -14,8 +14,9 @@ const validatePostStatus = async (req, res, next) => {
     if (!file) fileIsMissing = true;
     if (!content || !content.replace(/\s/g, '').length) contentIsMissing = true;
     // return message error if req does not contains both file and content 
-    if (fileIsMissing && contentIsMissing) return res.status(400).send({
-         message: "Please enter content or image!" 
+    if (fileIsMissing && contentIsMissing)
+        return res.status(400).send({
+            message: "Please enter content or image!"
         });
     next();
 }
@@ -30,7 +31,7 @@ const validatePostStatus = async (req, res, next) => {
 const validateComment = (req, res, next) => {
     let result = schema.schemaComment.validate(req.body);
     if (result.error) {
-        /* #swagger.responses[400] = { description: 'Invalid comment input' } */   
+        /* #swagger.responses[400] = { description: 'Invalid comment input' } */
         return res.status(400).send(result.error.details[0].message);
     }
     next();

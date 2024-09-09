@@ -1,0 +1,24 @@
+TEST upload file
+
+Cách 1: updateProfile(@ModelAttribute UpdateProfileRequestDTO updateProfileDTO)
+UpdateProfileRequestDTO: 
+                @JsonIgnoreProperties(ignoreUnknown = true)
+                @ValidImage
+                MultipartFile avatar;
+                . . .
+
+=> LỖI: Khi check "Send empty value" mà ko truyền file lên thì bị lỗi
+avatar: Failed to convert property value of type 'java.lang.String' to required type 'org.springframework.web.multipart.MultipartFile' for property 'avatar'; 
+Cannot convert value of type 'java.lang.String' to required type 'org.springframework.web.multipart.MultipartFile' for property 'avatar': no matching editors or conversion strategy found
+
+=> vẫn bị bắt buộc!
+
+Cách 2: testUpload(@RequestPart(required = false) String fullName, 
+                   @RequestPart(required = false) String job, 
+                   @RequestPart(required = false) String address, 
+                   @RequestPart(required = false) String gender, 
+                   @RequestPart(required = false) String birthday, 
+                   @RequestPart(required = false) MultipartFile avatar)
+=> OK, check hay ko check thì cx ok
+
+Cách 3: 
